@@ -67,11 +67,17 @@ class WeatherClock extends React.Component {
 	startWeatherPolling = () => {
 		this.stopWeatherPolling();
 		if (this.weatherClockHasData()) {
+			this.checkWeatherDataUpToDateness();
+			let self = this;
 			this.weatherUpdateInterval = setInterval(() => {
-				if (Helpers.dataIsOutdated(this.props.weatherData, true)) {
-					this.fetchWeatherDataBackground();
-				}
+				self.checkWeatherDataUpToDateness();
 			}, 5000);
+		}
+	};
+
+	checkWeatherDataUpToDateness = () => {
+		if (Helpers.dataIsOutdated(this.props.weatherData, true)) {
+			this.fetchWeatherDataBackground();
 		}
 	};
 
