@@ -1,0 +1,15 @@
+version: '2'
+services:
+
+  app:
+    image: weatherwatch
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./app:/app
+    command: /app/run-dev.sh
+    working_dir: "/app"
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000" # node.js
