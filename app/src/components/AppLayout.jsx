@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Images } from '../assets/images';
 import { initializeClient } from '../actions/appActions';
 import { fetchWeatherDataCached } from '../actions/weatherActions';
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+import { Colors } from '../utils/colors';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import chroma from 'chroma-js';
 import NotificationDialog from './NotificationDialog';
 import AboutDialog from './AboutDialog';
@@ -56,59 +57,10 @@ class AppLayout extends React.Component {
 			return null;
 		}
 
-		const hover = (colorTheme.id === "dark")
-			? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)";
-
-		const selected = (colorTheme.id === "dark")
-			? "rgba(255, 255, 255, 0.14)" : "rgba(0, 0, 0, 0.14)";
-
-		const muiTheme = createMuiTheme({
-			overrides: {
-				MuiTooltip: {
-					tooltip: {
-						color: colorTheme.text.light,
-						backgroundColor: colorTheme.bg.darker
-					}
-				}
-			},
-			palette: {
-				type: colorTheme.id,
-				common: {
-					white: colorTheme.text.light
-				},
-				primary: {
-					light: colorTheme.accent.light,
-					main: colorTheme.accent.light,
-					dark: colorTheme.accent.light,
-					contrastText: colorTheme.accent.light,
-				},
-				secondary: {
-					light: colorTheme.accent.light,
-					main: colorTheme.accent.light,
-					dark: colorTheme.accent.light,
-					contrastText: colorTheme.accent.light,
-				},
-				background: {
-					paper: colorTheme.misc.menu,
-				},
-				text: {
-					primary: colorTheme.text.light,
-					secondary: colorTheme.text.dark,
-					disabled: colorTheme.text.darker,
-					hint: colorTheme.misc.hint
-				},
-				action: {
-					active: colorTheme.text.light,
-					hover: hover,
-					selected: selected,
-				}
-			}
-		});
-
 		this.setBodyStyles(colorTheme);
 
 		return (
-			<MuiThemeProvider theme={muiTheme}>
+			<MuiThemeProvider theme={Colors.getMuiTheme(colorTheme)}>
 				<div className="content-container">
 					<NotificationDialog/>
 					<AboutDialog/>
