@@ -8,7 +8,7 @@ class App extends Component {
 		return (
 			<Provider store={store}>
 				<AppLayout/>
-            </Provider>
+			</Provider>
 		);
 	}
 }

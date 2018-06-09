@@ -8,11 +8,7 @@ const prodConfig = {
 };
 
 let loadConfiguration = function() {
-	if (process.env.NODE_ENV === "development") {
-		return devConfig;
-	} else {
-		return prodConfig;
-	}
+	return (process.env.NODE_ENV === "development") ? devConfig : prodConfig;
 }
 
 export default loadConfiguration();
