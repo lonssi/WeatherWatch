@@ -57,6 +57,40 @@ class Settings extends React.Component {
 
 	render() {
 
+		const checkBoxes = (
+			<div className="settings-check-boxes">
+				<FormGroup>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={this.props.clockSettings.gradientMode}
+								onChange={this.gradientModeToggled}
+							/>
+						}
+						label="Gradient mode"
+					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={this.props.clockSettings.forecastTimezone}
+								onChange={this.tzModeToggled}
+							/>
+						}
+						label="Forecast timezone"
+					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={this.props.clockSettings.secondHand}
+								onChange={this.secondHandToggled}
+							/>
+						}
+						label="Second hand"
+					/>
+				</FormGroup>
+			</div>
+		);
+
 		const selectFieldStyle = {
 			color: this.props.colorTheme.text.light,
 			width: '280px',
@@ -75,77 +109,44 @@ class Settings extends React.Component {
 			return <MenuItem key={item.id} value={item.id}>{item.text}</MenuItem>;
 		});
 
-		const settings = (
-			<div className="settings-container">
-				<div className="settings-check-boxes">
-					<FormGroup>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={this.props.clockSettings.gradientMode}
-									onChange={this.gradientModeToggled}
-								/>
-							}
-							label="Gradient mode"
-						/>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={this.props.clockSettings.forecastTimezone}
-									onChange={this.tzModeToggled}
-								/>
-							}
-							label="Forecast timezone"
-						/>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={this.props.clockSettings.secondHand}
-									onChange={this.secondHandToggled}
-								/>
-							}
-							label="Second hand"
-						/>
-					</FormGroup>
-				</div>
-				<FormGroup>
-					<FormControl>
-						<InputLabel>Color theme</InputLabel>
-						<Select
-							value={this.props.colorTheme.id}
-							onChange={this.colorThemeChange}
-							style={selectFieldStyle}
-							className="select-field"
-						>
-							{colorThemeItems}
-						</Select>
-					</FormControl>
-					<br />
-					<FormControl>
-						<InputLabel>Units</InputLabel>
-						<Select
-							value={this.props.clockSettings.unitMode.id}
-							onChange={this.unitModeChange}
-							style={selectFieldStyle}
-							className="select-field"
-						>
-							{unitModeItems}
-						</Select>
-					</FormControl>
-					<br />
-					<FormControl>
-						<InputLabel>Clock size</InputLabel>
-						<Select
-							value={this.props.clockSettings.clockSize.id}
-							onChange={this.clockSizeChange}
-							style={selectFieldStyle}
-							className="select-field"
-						>
-							{clockSizeItems}
-						</Select>
-					</FormControl>
-				</FormGroup>
-			</div>
+		const selectFields = (
+			<FormGroup>
+				<FormControl>
+					<InputLabel>Color theme</InputLabel>
+					<Select
+						value={this.props.colorTheme.id}
+						onChange={this.colorThemeChange}
+						style={selectFieldStyle}
+						className="select-field"
+					>
+						{colorThemeItems}
+					</Select>
+				</FormControl>
+				<br />
+				<FormControl>
+					<InputLabel>Units</InputLabel>
+					<Select
+						value={this.props.clockSettings.unitMode.id}
+						onChange={this.unitModeChange}
+						style={selectFieldStyle}
+						className="select-field"
+					>
+						{unitModeItems}
+					</Select>
+				</FormControl>
+				<br />
+				<FormControl>
+					<InputLabel>Clock size</InputLabel>
+					<Select
+						value={this.props.clockSettings.clockSize.id}
+						onChange={this.clockSizeChange}
+						style={selectFieldStyle}
+						className="select-field"
+					>
+						{clockSizeItems}
+					</Select>
+				</FormControl>
+			</FormGroup>
 		);
 
 		return (
@@ -156,7 +157,10 @@ class Settings extends React.Component {
 				>
 					<DialogTitle>{"Settings"}</DialogTitle>
 					<DialogContent>
-						{settings}
+						<div className="settings-container">
+							{checkBoxes}
+							{selectFields}
+						</div>
 					</DialogContent>
 					<DialogActions>
 						<Button onClick={this.handleDialogClose} autoFocus>
