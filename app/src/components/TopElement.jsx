@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchWeatherData, fetchWeatherDataLocation } from '../actions/weatherActions.js';
+import { Constants } from '../utils/constants';
+import { Helpers } from '../utils/helpers.js';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Helpers } from '../utils/helpers.js';
 
 
 class TopElement extends React.Component {
@@ -58,14 +59,64 @@ class TopElement extends React.Component {
 		);
 	};
 
+	getLocationButton = (buttonStyle) => {
+		return (
+			<div className="location-button-container align-left">
+				<Tooltip
+					title="Get location"
+					enterDelay={Constants.tooltipDelay}
+					disableFocusListener={true}
+				>
+					<Button
+						onClick={this.locationButtonClicked}
+						style={buttonStyle}
+						disabled={!navigator.geolocation}
+					>
+						<FontAwesomeIcon icon={"map-marker-alt"} />
+					</Button>
+				</Tooltip>
+			</div>
+		);
+	};
+
+	getTextField = () => {
+		return (
+			<TextField
+				className="location-input-field"
+				placeholder="Location"
+				onKeyPress={this.onKeyPress}
+				value={this.state.locationText}
+				onChange={this.handleInputChange}
+			/>
+		);
+	}
+
+	getSearchButton = (buttonStyle) => {
+		return (
+			<div className="location-button-container align-right">
+				<Tooltip
+					title="Search"
+					enterDelay={Constants.tooltipDelay}
+					disableFocusListener={true}
+				>
+					<Button
+						onClick={this.searchButtonClicked}
+						style={buttonStyle}
+					>
+						<FontAwesomeIcon icon={"search"} />
+					</Button>
+				</Tooltip>
+			</div>
+		);
+	};
+
 	render() {
 
-		const locationDisabled = !navigator.geolocation;
+		const buttonStyle = { width: '36px', minWidth: '36px' };
 
-		const buttonStyle = {
-			width: '36px',
-			minWidth: '36px',
-		};
+		const locationButton = this.getLocationButton(buttonStyle);
+		const textField = this.getTextField();
+		const searchButton = this.getSearchButton(buttonStyle);
 
 		const loading = this.props.weatherLoading || (this.props.weatherData && !this.props.imagesReady);
 		const loader = (loading) ? this.getLoader() : null;
@@ -75,34 +126,9 @@ class TopElement extends React.Component {
 				<div className="top-wrapper">
 					<div className="location-input-container">
 						<form>
-							<div className="location-button-container align-left">
-								<Tooltip title="Get location">
-									<Button
-										onClick={this.locationButtonClicked}
-										style={buttonStyle}
-										disabled={locationDisabled}
-									>
-										<FontAwesomeIcon icon={"map-marker-alt"} />
-									</Button>
-								</Tooltip>
-							</div>
-							<TextField
-								className="location-input-field"
-								placeholder="Location"
-								onKeyPress={this.onKeyPress}
-								value={this.state.locationText}
-								onChange={this.handleInputChange}
-							/>
-							<div className="location-button-container align-right">
-								<Tooltip title="Search">
-									<Button
-										onClick={this.searchButtonClicked}
-										style={buttonStyle}
-									>
-										<FontAwesomeIcon icon={"search"} />
-									</Button>
-								</Tooltip>
-							</div>
+							{locationButton}
+							{textField}
+							{searchButton}
 						</form>
 					</div>
 					<div className="loader-container">

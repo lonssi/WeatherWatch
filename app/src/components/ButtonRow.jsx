@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { availableDataModes } from '../assets/datatypes';
 import { openSettingsDialog, openAboutDialog } from '../actions/dialogActions';
 import { toggleFutureMode, setDataMode } from '../actions/clockActions';
+import { Constants } from '../utils/constants';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -100,7 +101,11 @@ class ButtonRow extends React.Component {
 
 		return (
 			<div className="buttons-container">
-				<Tooltip title="Select data type">
+				<Tooltip
+					title="Select data type"
+					enterDelay={Constants.tooltipDelay}
+					disableFocusListener={true}
+				>
 					<Button
 						onClick={this.handleDataMenuTouchTap}
 						style={dataMenuButtonStyle}
@@ -122,7 +127,11 @@ class ButtonRow extends React.Component {
 					{dataModeItems}
 				</Menu>
 
-				<Tooltip title="Settings">
+				<Tooltip
+					title="Settings"
+					enterDelay={Constants.tooltipDelay}
+					disableFocusListener={true}
+				>
 					<Button
 						onClick={this.dotMenuButtonClick}
 						style={dotMenuBtnStyle}
@@ -133,7 +142,11 @@ class ButtonRow extends React.Component {
 					</Button>
 				</Tooltip>
 
-				<Tooltip title="About">
+				<Tooltip
+					title="About"
+					enterDelay={Constants.tooltipDelay}
+					disableFocusListener={true}
+				>
 					<Button
 						onClick={this.aboutDialogButtonClick}
 						style={aboutDialogBtnStyle}
@@ -144,7 +157,11 @@ class ButtonRow extends React.Component {
 					</Button>
 				</Tooltip>
 
-				<Tooltip title="12 hours forward">
+				<Tooltip
+					title="12 hours forward"
+					enterDelay={Constants.tooltipDelay}
+					disableFocusListener={true}
+				>
 					<Button
 						onClick={this.futureButtonClick}
 						style={futureButtonStyle}

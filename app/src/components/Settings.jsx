@@ -153,7 +153,6 @@ class Settings extends React.Component {
 				<Dialog
 					open={this.props.open}
 					onClose={this.handleDialogClose}
-					disableRestoreFocus={true}
 				>
 					<DialogTitle>{"Settings"}</DialogTitle>
 					<DialogContent>
