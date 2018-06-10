@@ -8,7 +8,7 @@ import {
 import { Helpers } from '../utils/helpers.js';
 import {
 	availableUnitModes, availableDataModes, availableClockSizes
-} from '../assets/datatypes';
+} from '../assets/store';
 
 
 let getMatchingUnitMode = function(value) {
@@ -56,9 +56,9 @@ let getInitialState = function() {
 	let types = [
 		{ id: 'unitMode', matchFunction: getMatchingUnitMode },
 		{ id: 'dataMode', matchFunction: getMatchingDataMode },
+		{ id: 'clockSize', matchFunction: getMatchingClockSize },
 		{ id: 'forecastTimezone', matchFunction: Helpers.toBoolean },
 		{ id: 'gradientMode', matchFunction: Helpers.toBoolean },
-		{ id: 'clockSize', matchFunction: Helpers.toBoolean },
 		{ id: 'secondHand', matchFunction: Helpers.toBoolean }
 	];
 

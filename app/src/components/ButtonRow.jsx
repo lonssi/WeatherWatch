@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { availableDataModes } from '../assets/datatypes';
+import { availableDataModes } from '../assets/store';
 import { openSettingsDialog, openAboutDialog } from '../actions/dialogActions';
 import { toggleFutureMode, setDataMode } from '../actions/clockActions';
 import { Constants } from '../utils/constants';

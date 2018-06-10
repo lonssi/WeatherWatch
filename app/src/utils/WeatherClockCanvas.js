@@ -1,7 +1,7 @@
 import { Helpers } from './helpers.js';
 import { Constants } from './constants.js';
 import { MoonPainter } from './MoonPainter.js';
-import { dataTypes } from '../assets/datatypes';
+import { dataTypes } from '../assets/store';
 import { Images } from '../assets/images';
 import './ArcGradient.js';
 import chroma from 'chroma-js';
