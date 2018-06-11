@@ -10,7 +10,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
-class AboutDialog extends React.Component {
+class About extends React.Component {
 
 	handleDialogClose = () => {
 		this.props.closeAboutDialog();
@@ -40,8 +40,12 @@ class AboutDialog extends React.Component {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={this.handleDialogClose} autoFocus>
-						CLOSE
+					<Button
+						onClick={this.handleDialogClose}
+						aria-label="Close"
+						autoFocus
+					>
+						close
 					</Button>
 				</DialogActions>
 			</Dialog>
@@ -49,7 +53,7 @@ class AboutDialog extends React.Component {
 	}
 }
 
-AboutDialog.propTypes = {
+About.propTypes = {
 	open: PropTypes.bool.isRequired
 };
 
@@ -60,4 +64,4 @@ export default connect(
 		}
 	},
 	{ closeAboutDialog }
-)(AboutDialog);
+)(About);

@@ -10,7 +10,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
-class NotificationDialog extends React.Component {
+class Notification extends React.Component {
 
 	handleDialogClose = () => {
 		this.props.closeNotificationDialog();
@@ -32,8 +32,12 @@ class NotificationDialog extends React.Component {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={this.handleDialogClose} autoFocus>
-						CLOSE
+					<Button
+						onClick={this.handleDialogClose}
+						aria-label="Close"
+						autoFocus
+					>
+						close
 					</Button>
 				</DialogActions>
 			</Dialog>
@@ -41,7 +45,7 @@ class NotificationDialog extends React.Component {
 	}
 }
 
-NotificationDialog.propTypes = {
+Notification.propTypes = {
 	open: PropTypes.bool.isRequired,
 	status: PropTypes.string.isRequired
 };
@@ -54,4 +58,4 @@ export default connect(
 		}
 	},
 	{ closeNotificationDialog }
-)(NotificationDialog);
+)(Notification);

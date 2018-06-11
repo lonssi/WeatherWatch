@@ -7,8 +7,8 @@ import { fetchWeatherDataCached } from '../actions/weatherActions';
 import { Colors } from '../utils/colors';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import chroma from 'chroma-js';
-import NotificationDialog from './NotificationDialog';
-import AboutDialog from './AboutDialog';
+import Notification from './Notification';
+import About from './About';
 import Settings from './Settings';
 import TopElement from './TopElement';
 import WeatherClock from './WeatherClock';
@@ -62,8 +62,8 @@ class AppLayout extends React.Component {
 		return (
 			<MuiThemeProvider theme={Colors.getMuiTheme(colorTheme)}>
 				<div className="content-container">
-					<NotificationDialog/>
-					<AboutDialog/>
+					<Notification/>
+					<About/>
 					<Settings/>
 					<TopElement/>
 					<div className="bottom-container">
