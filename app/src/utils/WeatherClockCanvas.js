@@ -268,7 +268,7 @@ export class WeatherClockCanvas {
 		const location = this.rimCenterRadius;
 		const width = this.arcWidth / 2;
 
-		const lightness = (this.colorTheme.id === 'dark') ? 0.0275 : 0.0325;
+		const lightness = (this.colorTheme.id === 'dark') ? 0.0275 : 0.04;
 		const color1 = this.colorTheme.bg.dark;
 		const color2 = chroma(color1).set('hsl.l', '+' + lightness).css();
 		const colors = [color2, color1];

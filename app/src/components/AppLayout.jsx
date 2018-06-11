@@ -59,16 +59,20 @@ class AppLayout extends React.Component {
 
 		this.setBodyStyles(colorTheme);
 
+		const dialogs = (
+			<React.Fragment>
+				<Notification/>
+				<About/>
+				<Settings/>
+			</React.Fragment>
+		);
+
 		return (
 			<MuiThemeProvider theme={Colors.getMuiTheme(colorTheme)}>
 				<div className="content-container">
-					<Notification/>
-					<About/>
-					<Settings/>
+					{dialogs}
 					<TopElement/>
-					<div className="bottom-container">
-						<WeatherClock/>
-					</div>
+					<WeatherClock/>
 				</div>
 			</MuiThemeProvider>
 		);

@@ -231,7 +231,7 @@ class WeatherClock extends React.Component {
 		const buttons = (this.weatherclock) ? <ButtonRow/> : null;
 
 		return (
-			<div className="width-100 height-100">
+			<div className="bottom-container">
 				{locationTextElement}
 				<div className="weather-clock-container" ref="container">
 					<canvas ref="canvas"/>

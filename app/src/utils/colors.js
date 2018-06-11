@@ -42,7 +42,7 @@ const colorThemeLight = {
 	name: 'Light',
 	bg: {
 		light: '#FFFFFF',
-		dark: '#EAEAEA',
+		dark: '#E8E8E8',
 		darker: '#E1E1E1',
 		clock: '#FFFFFF',
 		empty: '#D1D1D1'
