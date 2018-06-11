@@ -112,7 +112,7 @@ class Settings extends React.Component {
 		const selectFields = (
 			<FormGroup>
 				<FormControl>
-					<InputLabel>Color theme</InputLabel>
+					<InputLabel htmlFor="Color theme">Color theme</InputLabel>
 					<Select
 						value={this.props.colorTheme.id}
 						onChange={this.colorThemeChange}
@@ -124,7 +124,7 @@ class Settings extends React.Component {
 				</FormControl>
 				<br />
 				<FormControl>
-					<InputLabel>Units</InputLabel>
+					<InputLabel htmlFor="Units">Units</InputLabel>
 					<Select
 						value={this.props.clockSettings.unitMode.id}
 						onChange={this.unitModeChange}
@@ -136,7 +136,7 @@ class Settings extends React.Component {
 				</FormControl>
 				<br />
 				<FormControl>
-					<InputLabel>Clock size</InputLabel>
+					<InputLabel htmlFor="Clock size">Clock size</InputLabel>
 					<Select
 						value={this.props.clockSettings.clockSize.id}
 						onChange={this.clockSizeChange}
@@ -163,8 +163,12 @@ class Settings extends React.Component {
 						</div>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={this.handleDialogClose} autoFocus>
-							CLOSE
+						<Button
+							onClick={this.handleDialogClose}
+							aria-label="Close"
+							autoFocus
+						>
+							close
 						</Button>
 					</DialogActions>
 				</Dialog>

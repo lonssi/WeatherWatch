@@ -71,6 +71,7 @@ class TopElement extends React.Component {
 						onClick={this.locationButtonClicked}
 						style={buttonStyle}
 						disabled={!navigator.geolocation}
+						aria-label="Get location"
 					>
 						<FontAwesomeIcon icon={"map-marker-alt"} />
 					</Button>
@@ -82,6 +83,7 @@ class TopElement extends React.Component {
 	getTextField = () => {
 		return (
 			<TextField
+				aria-label="Location"
 				className="location-input-field"
 				placeholder="Location"
 				onKeyPress={this.onKeyPress}
@@ -102,6 +104,7 @@ class TopElement extends React.Component {
 					<Button
 						onClick={this.searchButtonClicked}
 						style={buttonStyle}
+						aria-label="Search"
 					>
 						<FontAwesomeIcon icon={"search"} />
 					</Button>
@@ -125,11 +128,9 @@ class TopElement extends React.Component {
 			<div className="top-container">
 				<div className="top-wrapper">
 					<div className="location-input-container">
-						<form>
-							{locationButton}
-							{textField}
-							{searchButton}
-						</form>
+						{locationButton}
+						{textField}
+						{searchButton}
 					</div>
 					<div className="loader-container">
 						{loader}

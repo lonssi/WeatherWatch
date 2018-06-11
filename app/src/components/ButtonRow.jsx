@@ -109,6 +109,7 @@ class ButtonRow extends React.Component {
 					<Button
 						onClick={this.handleDataMenuTouchTap}
 						style={dataMenuButtonStyle}
+						aria-label="Select data type"
 					>
 						<div className="button-unit-icon-container">
 							<FontAwesomeIcon icon={clockSettings.dataMode.icon} />
@@ -135,6 +136,7 @@ class ButtonRow extends React.Component {
 					<Button
 						onClick={this.dotMenuButtonClick}
 						style={dotMenuBtnStyle}
+						aria-label="Settings"
 					>
 						<div>
 							<FontAwesomeIcon icon={"ellipsis-v"} />
@@ -150,6 +152,7 @@ class ButtonRow extends React.Component {
 					<Button
 						onClick={this.aboutDialogButtonClick}
 						style={aboutDialogBtnStyle}
+						aria-label="About"
 					>
 						<div>
 							<FontAwesomeIcon icon={"question"} />
@@ -165,6 +168,7 @@ class ButtonRow extends React.Component {
 					<Button
 						onClick={this.futureButtonClick}
 						style={futureButtonStyle}
+						aria-label="12 hours forward"
 					>
 						<div className="button-unit-icon-container">
 							<FontAwesomeIcon icon={"clock"} />
