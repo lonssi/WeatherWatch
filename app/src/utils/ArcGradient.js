@@ -95,23 +95,41 @@ newCanvas.fillArcGradient = function (x, y, startAngle, endAngle, colorStops, ou
 		endAngle = endAngle * Math.PI / 180;
 	}
 
-	let deltaArcAngle = endAngle - startAngle;
-	let gradientWidth = Math.floor(outerRadius * Math.abs(deltaArcAngle) * options.resolutionFactor),
-		gData = generateGradientImgData(gradientWidth, colorStops).data;
+	const oneColor = !!colorStops.reduce(function(a, b) { return (a.color === b.color) ? a : NaN; });
 
-	this.lineWidth = Math.min(4 / options.resolutionFactor, 1);
+	if (oneColor) {
 
-	for (let i = 0; i < gradientWidth; i++) {
-		let gradi = i * 4,
-			theta = startAngle + deltaArcAngle * i / gradientWidth;
-
-		this.strokeStyle = `rgba(${gData[gradi]}, ${gData[gradi + 1]}, ${gData[gradi + 2]}, ${gData[gradi + 3]})`;
-
+		this.strokeStyle = colorStops[0].color;
+		this.lineWidth = outerRadius - innerRadius;
 		this.beginPath();
-		this.moveTo(x + Math.cos(theta) * innerRadius, y + Math.sin(theta) * innerRadius);
-		this.lineTo(x + Math.cos(theta) * outerRadius, y + Math.sin(theta) * outerRadius);
+		this.arc(x, y, outerRadius - this.lineWidth / 2, startAngle, endAngle);
 		this.stroke();
-		this.closePath();
+
+	} else {
+
+		const deltaArcAngle = endAngle - startAngle;
+		const gradientWidth = Math.floor(outerRadius * Math.abs(deltaArcAngle) * options.resolutionFactor);
+		const gData = generateGradientImgData(gradientWidth, colorStops).data;
+		const delta = deltaArcAngle / gradientWidth;
+
+		this.lineWidth = Math.min(4 / options.resolutionFactor, 1);
+
+		let cos, sin;
+
+		for (let i = 0; i < gradientWidth; i++) {
+			let gradi = i * 4,
+				theta = startAngle + i * delta;
+
+			this.strokeStyle = `rgb(${gData[gradi]}, ${gData[gradi + 1]}, ${gData[gradi + 2]})`;
+
+			cos = Math.cos(theta);
+			sin = Math.sin(theta);
+
+			this.beginPath();
+			this.moveTo(x + cos * innerRadius, y + sin * innerRadius);
+			this.lineTo(x + cos * outerRadius, y + sin * outerRadius);
+			this.stroke();
+		}
 	}
 
 	this.lineWidth = oldLineWidth;
