@@ -55,9 +55,8 @@ class Settings extends React.Component {
 		this.props.setClockSize(event.target.value);
 	};
 
-	render() {
-
-		const checkBoxes = (
+	getCheckBoxes = () => {
+		return (
 			<div className="settings-check-boxes">
 				<FormGroup>
 					<FormControlLabel
@@ -90,6 +89,9 @@ class Settings extends React.Component {
 				</FormGroup>
 			</div>
 		);
+	};
+
+	getSelectFields = () => {
 
 		const selectFieldStyle = {
 			color: this.props.colorTheme.text.light,
@@ -109,7 +111,7 @@ class Settings extends React.Component {
 			return <MenuItem key={item.id} value={item.id}>{item.text}</MenuItem>;
 		});
 
-		const selectFields = (
+		return (
 			<FormGroup>
 				<FormControl>
 					<InputLabel htmlFor="Color theme">Color theme</InputLabel>
@@ -148,6 +150,12 @@ class Settings extends React.Component {
 				</FormControl>
 			</FormGroup>
 		);
+	};
+
+	render() {
+
+		const checkBoxes = this.getCheckBoxes();
+		const selectFields = this.getSelectFields();
 
 		return (
 			<div>
