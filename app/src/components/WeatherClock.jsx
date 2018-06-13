@@ -5,6 +5,7 @@ import _ from 'lodash';
 import {
 	fetchWeatherData, fetchWeatherDataLocation, resetWeatherData
 } from '../actions/weatherActions';
+import { UPDATE_CLOCK, UPDATE_DATA, UPDATE_ALL } from '../actions/types';
 import ButtonRow from './ButtonRow';
 import { WeatherClockCanvas } from '../utils/WeatherClockCanvas.js';
 import { Helpers } from '../utils/helpers.js';
@@ -36,7 +37,7 @@ class WeatherClock extends React.Component {
 	};
 
 	resume = () => {
-		this.startClockUpdate();
+		this.startClockUpdate(UPDATE_ALL);
 		this.startWeatherPolling();
 	};
 
@@ -81,25 +82,26 @@ class WeatherClock extends React.Component {
 		}
 	};
 
-	clockUpdate = (flag) => {
+	clockUpdate = (updateFlag) => {
 		// If the application resumes after sleep
 		// the data may have become outdated
 		if (Helpers.dataIsOutdated(this.props.weatherData, false)) {
 			this.clearWeatherClock();
 			this.props.resetWeatherData();
 			this.fetchWeatherDataBackground();
-		} else {
-			this.weatherclock.update(flag);
+			return;
 		}
+
+		this.weatherclock.update(updateFlag);
 	};
 
-	startClockUpdate = () => {
+	startClockUpdate = (updateFlag) => {
 		this.stopClockUpdate();
 		if (this.weatherClockHasData()) {
-			this.clockUpdate(true);
+			this.clockUpdate(updateFlag);
 			let self = this;
 			this.clockUpdateInterval = setInterval(() => {
-				self.clockUpdate(false);
+				self.clockUpdate(UPDATE_CLOCK);
 			}, 100);
 		}
 	};
@@ -112,7 +114,7 @@ class WeatherClock extends React.Component {
 
 	resize = () => {
 		if (this.weatherclock) {
-			this.clockUpdate(true);
+			this.clockUpdate(UPDATE_ALL);
 			this.forceUpdate();
 		}
 	};
@@ -127,9 +129,12 @@ class WeatherClock extends React.Component {
 			this.props.colorTheme
 		);
 
-		this.currentId = this.props.weatherData.id;
+		this.currentWeatherId = this.props.weatherData.id;
+		this.currentTz = this.props.clockSettings.forecastTimezone;
+		this.currentThemeId = this.props.colorTheme.id;
+		this.currentClockSizeId = this.props.clockSettings.clockSize.id;
 
-		this.startClockUpdate();
+		this.startClockUpdate(UPDATE_ALL);
 		this.startWeatherPolling();
 	};
 
@@ -209,17 +214,40 @@ class WeatherClock extends React.Component {
 			this.initializeCanvas();
 		}
 
-		// If weather data changes, restart weather data polling
-		if (this.weatherClockHasData() && (this.currentId !== this.props.weatherData.id)) {
-			this.startWeatherPolling();
-			this.currentId = this.props.weatherData.id;
-		}
-
 		if (this.weatherClockHasData()) {
+
 			this.weatherclock.setSettings(this.props.clockSettings);
 			this.weatherclock.updateWeatherData(this.props.weatherData);
 			this.weatherclock.updateColorTheme(this.props.colorTheme);
-			this.startClockUpdate();
+
+			let updateFlag = UPDATE_DATA;
+
+			// If timezone changes, update all
+			if (this.currentTz !== this.props.clockSettings.forecastTimezone) {
+				updateFlag = UPDATE_ALL;
+				this.currentTz = this.props.clockSettings.forecastTimezone;
+			}
+
+			// If colortheme changes, update all
+			if (this.currentThemeId !== this.props.colorTheme.id) {
+				updateFlag = UPDATE_ALL;
+				this.currentThemeId = this.props.colorTheme.id;
+			}
+
+			// If weather data changes, update all and restart weather data polling
+			if (this.currentWeatherId !== this.props.weatherData.id) {
+				updateFlag = UPDATE_ALL;
+				this.startWeatherPolling();
+				this.currentWeatherId = this.props.weatherData.id;
+			}
+
+			// If clock size changes, update all
+			if (this.currentClockSizeId !== this.props.clockSettings.clockSize.id) {
+				updateFlag = UPDATE_ALL;
+				this.currentClockSizeId = this.props.clockSettings.clockSize.id;
+			}
+
+			this.startClockUpdate(updateFlag);
 		}
 
 		if (this.weatherclock && !this.props.weatherData) {

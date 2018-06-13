@@ -3,9 +3,14 @@ import { Constants } from './constants.js';
 import { MoonPainter } from './MoonPainter.js';
 import { dataTypes } from '../assets/store';
 import { Images } from '../assets/images';
+import { UPDATE_CLOCK, UPDATE_DATA, UPDATE_ALL } from '../actions/types';
 import './ArcGradient.js';
 import chroma from 'chroma-js';
 import _ from 'lodash';
+
+
+const deg2rad = Math.PI / 180;
+const arc = 2 * Math.PI;
 
 
 export class WeatherClockCanvas {
@@ -14,6 +19,9 @@ export class WeatherClockCanvas {
 
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d');
+
+		this.canvasData = document.createElement('canvas');
+		this.ctxData = this.canvasData.getContext('2d');
 
 		this.canvasBg = document.createElement('canvas');
 		this.ctxBg = this.canvasBg.getContext('2d');
@@ -28,6 +36,7 @@ export class WeatherClockCanvas {
 		this.colorTheme = colorTheme;
 
 		this.datePrev = new Date();
+		this.updateThreshold = (clockSettings.secondHand) ? 1000 : 5000;
 	}
 
 	clear() {
@@ -40,13 +49,14 @@ export class WeatherClockCanvas {
 
 	setSettings(value) {
 		this.settings = value;
+		this.updateThreshold = (this.settings.secondHand) ? 1000 : 5000;
 	}
 
 	updateColorTheme(data) {
 		this.colorTheme = data;
 	}
 
-	update(updateAll) {
+	update(updateFlag) {
 
 		if (!this.weatherData) {
 			return;
@@ -54,20 +64,21 @@ export class WeatherClockCanvas {
 
 		this.date = new Date();
 
-		if (!updateAll) {
+		if (updateFlag === UPDATE_CLOCK) {
 			// Draw all elements if the starting hour has changed
-			updateAll = this.date.getHours() !== this.datePrev.getHours();
+			if (this.date.getHours() !== this.datePrev.getHours()) {
+				updateFlag = UPDATE_ALL
+			}
 		}
 
-		if (!updateAll) {
-			const diff = this.date - this.datePrev;
-			const threshold = (this.settings.secondHand) ? 1000 : 5000;
-			if (diff < threshold) {
+		if (updateFlag === UPDATE_CLOCK) {
+			// No redrawing if the time threshold is not exceeded
+			if (this.date - this.datePrev < this.updateThreshold) {
 				return;
 			}
 		}
 
-		if (updateAll) {
+		if (updateFlag === UPDATE_DATA || updateFlag === UPDATE_ALL) {
 			this.resize();
 		} else {
 			this.clear();
@@ -79,7 +90,11 @@ export class WeatherClockCanvas {
 			this.tzOffset = 0;
 		}
 
-		if (updateAll) {
+		if (updateFlag === UPDATE_ALL) {
+			this.updateWeatherBackground();
+		}
+
+		if (updateFlag === UPDATE_DATA || updateFlag === UPDATE_ALL) {
 			this.drawStaticElementsToCache();
 		}
 
@@ -113,10 +128,10 @@ export class WeatherClockCanvas {
 		this.canvas.style.width = size + 'px';
 		this.canvas.style.height = size + 'px';
 
-		this.canvasBg.width = this.canvas.width;
-		this.canvasBg.height = this.canvas.height;
-		this.canvasBg.style.width = this.canvas.style.width;
-		this.canvasBg.style.height = this.canvas.style.height;
+		this.canvasData.width = this.canvas.width;
+		this.canvasData.height = this.canvas.height;
+		this.canvasData.style.width = this.canvas.style.width;
+		this.canvasData.style.height = this.canvas.style.height;
 
 		this.center = { x: this.canvas.width / 2, y: this.canvas.height / 2 }
 
@@ -130,7 +145,7 @@ export class WeatherClockCanvas {
 	}
 
 	drawStaticElementsFromCache() {
-		this.ctx.drawImage(this.canvasBg, 0, 0);
+		this.ctx.drawImage(this.canvasData, 0, 0);
 	}
 
 	drawClockHands() {
@@ -169,13 +184,13 @@ export class WeatherClockCanvas {
 		}
 
 		this.ctx.beginPath();
-		this.ctx.arc(this.center.x, this.center.y, this.clockRadius * 0.055, 0, 2*Math.PI);
+		this.ctx.arc(this.center.x, this.center.y, this.clockRadius * 0.055, 0, arc);
 		this.ctx.fillStyle = this.colorTheme.accent.light;
 		this.ctx.fill();
 		this.ctx.closePath();
 
 		this.ctx.beginPath();
-		this.ctx.arc(this.center.x, this.center.y, this.clockRadius * 0.0225, 0, 2*Math.PI);
+		this.ctx.arc(this.center.x, this.center.y, this.clockRadius * 0.0225, 0, arc);
 		this.ctx.fillStyle = this.colorTheme.accent.dark;
 		this.ctx.fill();
 		this.ctx.closePath();
@@ -187,22 +202,21 @@ export class WeatherClockCanvas {
 		ctx.lineWidth = width;
 		ctx.lineCap = 'round';
 
-		ctx.save();
+		angle = (angle - 180) * deg2rad;
+
 		ctx.beginPath();
 		ctx.translate(this.center.x, this.center.y);
-		ctx.rotate(-180 * Math.PI/180);
-		ctx.rotate(angle * Math.PI/180);
+		ctx.rotate(angle);
 		ctx.moveTo(0, range[0]);
 		ctx.lineTo(0, range[1]);
 		ctx.stroke();
-		ctx.closePath();
-		ctx.restore();
+		ctx.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 	}
 
 	drawStaticElementsToCache() {
 
-		this.ctxBg.textBaseline = "middle";
-		this.ctxBg.textAlign = "center";
+		this.ctxData.textBaseline = "middle";
+		this.ctxData.textAlign = "center";
 
 		this.drawWeatherBackground();
 		this.drawClockFace();
@@ -213,15 +227,15 @@ export class WeatherClockCanvas {
 	drawClockFace() {
 
 		// Draw background
-		this.ctxBg.beginPath();
-		this.ctxBg.arc(this.center.x, this.center.y, this.clockRadius, 0, 2*Math.PI);
-		this.ctxBg.fillStyle = this.colorTheme.bg.clock;
-		this.ctxBg.fill();
-		this.ctxBg.closePath();
+		this.ctxData.beginPath();
+		this.ctxData.arc(this.center.x, this.center.y, this.clockRadius, 0, arc);
+		this.ctxData.fillStyle = this.colorTheme.bg.clock;
+		this.ctxData.fill();
+		this.ctxData.closePath();
 
 		// Text settings
-		this.ctxBg.font = this.unit * 1.25 + "px " + this.fontFamily;
-		this.ctxBg.fillStyle = this.colorTheme.text.dark;
+		this.ctxData.font = this.unit * 1.25 + "px " + this.fontFamily;
+		this.ctxData.fillStyle = this.colorTheme.text.dark;
 
 		let dateHour = Helpers.getClosestStartingHourDate(this.date) +
 			this.tzOffset * Constants.hourEpochs;
@@ -232,38 +246,41 @@ export class WeatherClockCanvas {
 
 		const hour = new Date(dateHour).getHours();
 
+		this.ctxData.lineCap = 'round';
+		this.ctxData.lineWidth = this.clockRadius / 54;
+		this.ctxData.strokeStyle = this.colorTheme.misc.clock;
+
 		for (let i = hour; i < hour + 12; i++) {
 
-			const angle = (i * 30) * Math.PI/180;
+			const angle = (i * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.clockRadius + this.unit);
-			this.ctxBg.beginPath();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.clockRadius + this.unit);
+			this.ctxData.beginPath();
 
 			if (i % 3 === 0) {
-				this.ctxBg.save();
-				this.ctxBg.translate(0, this.clockRadius * 0.225);
-				this.ctxBg.rotate(-angle);
-				this.ctxBg.fillText(i % 24, 0, 0);
-				this.ctxBg.restore();
+				this.ctxData.translate(0, this.clockRadius * 0.225);
+				this.ctxData.rotate(-angle);
+				this.ctxData.fillText(i % 24, 0, 0);
+				this.ctxData.rotate(angle);
+				this.ctxData.translate(0, -this.clockRadius * 0.225);
 			}
 
-			this.ctxBg.moveTo(0, 0);
-			this.ctxBg.lineTo(0, this.clockRadius / 14);
-			this.ctxBg.lineWidth = this.clockRadius / 54;
-			this.ctxBg.strokeStyle = this.colorTheme.misc.clock;
-			this.ctxBg.lineCap = 'round';
-			this.ctxBg.stroke();
-			this.ctxBg.closePath();
+			this.ctxData.moveTo(0, 0);
+			this.ctxData.lineTo(0, this.clockRadius / 14);
+			this.ctxData.stroke();
 
-			this.ctxBg.restore();
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
-	drawWeatherBackground() {
+	updateWeatherBackground() {
+
+		this.canvasBg.width = this.canvas.width;
+		this.canvasBg.height = this.canvas.height;
+		this.canvasBg.style.width = this.canvas.style.width;
+		this.canvasBg.style.height = this.canvas.style.height;
 
 		const location = this.rimCenterRadius;
 		const width = this.arcWidth / 2;
@@ -277,10 +294,20 @@ export class WeatherClockCanvas {
 		const value = hours % 12;
 		const valueDeg = value / 12 * 360;
 		const span = 30 / 180 * Math.PI;
-		const startAngle = valueDeg * Math.PI / 180 - Math.PI / 2 - span / 2;
-		const endAngle = startAngle + 2 * Math.PI;
+		const startAngle = valueDeg * deg2rad - Math.PI / 2 - span / 2;
+		const endAngle = startAngle + arc;
 
-		this.drawArcGradient(location, width, startAngle, endAngle, colors);
+		this.drawArcGradient(this.ctxBg, location, width, startAngle, endAngle, colors);
+	}
+
+	drawWeatherBackground() {
+		this.ctxData.translate(this.center.x, this.center.y);
+		if (!this.settings.forecastTimezone) {
+			const angle = this.tzOffset % 12 * deg2rad;
+			this.ctxData.rotate(angle);
+		}
+		this.ctxData.drawImage(this.canvasBg, -this.center.x, -this.center.y);
+		this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 	}
 
 	drawCelestialObjectIndicators() {
@@ -291,7 +318,8 @@ export class WeatherClockCanvas {
 		const dataMode = this.settings.dataMode.id;
 		const upColor = (dataMode === 'moon') ? this.colorTheme.static.moon_bright_up : '#FABA25';
 
-		this.ctxBg.lineWidth = thickness;
+		this.ctxData.lineWidth = thickness;
+		this.ctxData.lineCap = 'butt';
 
 		let now = new Date(Helpers.getClosestStartingHourDate(this.date));
 
@@ -345,20 +373,16 @@ export class WeatherClockCanvas {
 			const color = (up) ? upColor : this.colorTheme.misc.down;
 			const date = event.time;
 			const hour = date.getHours() + date.getMinutes() / 60 + this.tzOffset;
-			const angle = (hour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
+			const angle = (hour % 12) / 12 * arc;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle + Math.PI / 2);
-			this.ctxBg.translate(0, -location);
-			this.ctxBg.beginPath();
-			this.ctxBg.arc(0, 0, thickness / 2, 0, 2 * Math.PI);
-			this.ctxBg.fillStyle = color;
-			this.ctxBg.fill();
-			this.ctxBg.closePath();
-
-			this.ctxBg.restore();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -location);
+			this.ctxData.beginPath();
+			this.ctxData.arc(0, 0, thickness / 2, 0, arc);
+			this.ctxData.fillStyle = color;
+			this.ctxData.fill();
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 
 		const intervals = [];
@@ -381,13 +405,13 @@ export class WeatherClockCanvas {
 			const startHour = startDate.getHours() + startDate.getMinutes() / 60 + this.tzOffset;
 			const endHour = endDate.getHours() + endDate.getMinutes() / 60 + this.tzOffset;
 
-			const startAngle = (startHour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
-			const endAngle = (endHour % 12) / 12 * 2 * Math.PI - (Math.PI / 2);
+			const startAngle = (startHour % 12) / 12 * arc - (Math.PI / 2);
+			const endAngle = (endHour % 12) / 12 * arc - (Math.PI / 2);
 
-			this.ctxBg.strokeStyle = color;
-			this.ctxBg.beginPath();
-			this.ctxBg.arc(this.center.x, this.center.y, location, startAngle, endAngle);
-			this.ctxBg.stroke();
+			this.ctxData.strokeStyle = color;
+			this.ctxData.beginPath();
+			this.ctxData.arc(this.center.x, this.center.y, location, startAngle, endAngle);
+			this.ctxData.stroke();
 		}
 	}
 
@@ -503,6 +527,7 @@ export class WeatherClockCanvas {
 		}
 
 		switch (dataMode.id) {
+			default:
 			case "weather":
 				this.drawWeatherData(weatherDataArray);
 				break;
@@ -524,14 +549,12 @@ export class WeatherClockCanvas {
 			case "moon":
 				this.drawMoonData(weatherDataArray);
 				break;
-			default:
-				return;
 		}
 	}
 
 	drawWeatherData(weatherDataArray) {
 
-		this.ctxBg.fillStyle = this.colorTheme.text.dark;
+		this.ctxData.fillStyle = this.colorTheme.text.dark;
 		const textOffset = this.arcWidth * 0.02;
 
 		// Weather icon scaling
@@ -539,6 +562,8 @@ export class WeatherClockCanvas {
 		const height = this.arcWidth * 0.625;
 
 		const hours = this.date.getHours() + this.tzOffset;
+
+		const translation = this.rimCenterRadius + this.arcWidth * 0.265;
 
 		for (let i = 0; i < 12; i++) {
 
@@ -550,30 +575,27 @@ export class WeatherClockCanvas {
 			const weatherCode = parseInt(weatherObject.WeatherSymbol3, 10);
 			const imageKey = (weatherObject.sunPosition.altitude > 0) ? "day" : "night";
 			const image = this.images[weatherCode][imageKey];
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
 			if (Helpers.numberLength(tempRoundedStr) > 2) {
-				this.ctxBg.font = this.arcWidth * 0.18 + "px " + this.fontFamily;
+				this.ctxData.font = this.arcWidth * 0.18 + "px " + this.fontFamily;
 			} else {
-				this.ctxBg.font = this.arcWidth * 0.2 + "px " + this.fontFamily;
+				this.ctxData.font = this.arcWidth * 0.2 + "px " + this.fontFamily;
 			}
 
-			this.ctxBg.save();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -translation);
 
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
+			this.ctxData.rotate(-angle);
+			this.ctxData.fillText(tempRoundedStr + "°", textOffset, 0);
+			this.ctxData.rotate(angle);
 
-			this.ctxBg.translate(0, -this.arcWidth * 0.265);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.fillText(tempRoundedStr + "°", textOffset, 0);
-			this.ctxBg.rotate(angle);
+			this.ctxData.translate(0, this.arcWidth * 0.434);
+			this.ctxData.rotate(-angle);
+			this.ctxData.drawImage(image, -width / 2, -height / 2, width, height);
 
-			this.ctxBg.translate(0, this.arcWidth * 0.434);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.drawImage(image, -width / 2, -height / 2, width, height);
-
-			this.ctxBg.restore();
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
@@ -586,10 +608,10 @@ export class WeatherClockCanvas {
 		this.drawDataCircles(colors, hours);
 
 		if (this.settings.gradientMode) {
-			this.drawDataArcGradient(colors, hours);
+			this.drawDataArcGradient(this.ctxData, colors, hours);
 		}
 
-		this.ctxBg.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
+		this.ctxData.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
 
 		for (let i = 0; i < 12; i++) {
 
@@ -598,33 +620,30 @@ export class WeatherClockCanvas {
 			const unitMode = this.settings.unitMode.id;
 			const tempInt = parseInt(Helpers.floatToString(temperature, 0), 10);
 			const tempShow = (unitMode === "si") ? temperature : temperature * (9/5) + 32;
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.fillStyle = (tempInt > 0) ? this.colorTheme.text.data : '#FFF';
-			this.ctxBg.fillText(Helpers.floatToString(tempShow, 0) + "°", textOffset, 0);
-
-			this.ctxBg.restore();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius);
+			this.ctxData.rotate(-angle);
+			this.ctxData.fillStyle = (tempInt > 0) ? this.colorTheme.text.data : '#FFF';
+			this.ctxData.fillText(Helpers.floatToString(tempShow, 0) + "°", textOffset, 0);
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
 	drawRainData(weatherDataArray, colors) {
-
-		this.ctxBg.fillStyle = this.colorTheme.text.data;
-		this.ctxBg.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily
 
 		const hours = this.date.getHours() + this.tzOffset;
 
 		this.drawDataCircles(colors, hours);
 
 		if (this.settings.gradientMode) {
-			this.drawDataArcGradient(colors, hours);
+			this.drawDataArcGradient(this.ctxData, colors, hours);
 		}
+
+		this.ctxData.fillStyle = this.colorTheme.text.data;
+		this.ctxData.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily
 
 		for (let i = 0; i < 12; i++) {
 
@@ -635,151 +654,139 @@ export class WeatherClockCanvas {
 			const symbol = (this.settings.unitMode.id === 'si') ? "mm" : "\"";
 			const offset1 = (this.settings.unitMode.id === 'si') ? 0.11 : 0.07;
 			const offset2 = (this.settings.unitMode.id === 'si') ? 0.11 : 0.21;
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.fillText(Helpers.floatToString(precipShow, precision), 0, -this.arcWidthInner * offset1);
-			this.ctxBg.fillText(symbol, 0, this.arcWidthInner * offset2);
-
-			this.ctxBg.restore();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius);
+			this.ctxData.rotate(-angle);
+			this.ctxData.fillText(Helpers.floatToString(precipShow, precision), 0, -this.arcWidthInner * offset1);
+			this.ctxData.fillText(symbol, 0, this.arcWidthInner * offset2);
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
 	drawWindData(weatherDataArray, colors) {
-
-		this.ctxBg.fillStyle = this.colorTheme.text.data;
-
-		const fontSize = this.arcWidthInner * 0.235;
-		const fontSizeSmall = fontSize * 0.85;
 
 		const hours = this.date.getHours() + this.tzOffset;
 
 		this.drawDataCircles(colors, hours);
 
 		if (this.settings.gradientMode) {
-			this.drawDataArcGradient(colors, hours);
+			this.drawDataArcGradient(this.ctxData, colors, hours);
 		}
+
+		this.ctxData.fillStyle = this.colorTheme.text.data;
+
+		const fontSize = this.arcWidthInner * 0.235;
+		const fontSizeSmall = fontSize * 0.85;
 
 		for (let i = 0; i < 12; i++) {
 
 			const weatherObject = weatherDataArray[i];
 			const windDegree = weatherObject.WindDirection;
+			const windRad = (windDegree) / 180 * Math.PI
 			const windSpeed = weatherObject.WindSpeedMS;
 			const windSpeedShow = (this.settings.unitMode.id === 'si') ? windSpeed : windSpeed * 2.23694;
 			const symbol = (this.settings.unitMode.id === 'si') ? "m/s" : "mph";
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
 			const l = this.arcWidthInner * 0.075;
 			const g = 1.618;
 			const h = l + g * l;
 			const o = -0.87 * l;
 
-			this.ctxBg.save();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius - this.arcWidthInner / 6);
 
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.translate(0, -this.arcWidthInner / 6);
+			this.ctxData.rotate(-angle);
+			this.ctxData.font = fontSize + "px " + this.fontFamily;
+			this.ctxData.fillText(Helpers.floatToString(windSpeedShow, 0), 0, -this.arcWidthInner * 0.11);
+			this.ctxData.font = fontSizeSmall + "px " + this.fontFamily;
+			this.ctxData.fillText(symbol, 0, this.arcWidthInner * 0.11);
 
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.font = fontSize + "px " + this.fontFamily;
-			this.ctxBg.fillText(Helpers.floatToString(windSpeedShow, 0), 0, -this.arcWidthInner * 0.11);
-			this.ctxBg.font = fontSizeSmall + "px " + this.fontFamily;
-			this.ctxBg.fillText(symbol, 0, this.arcWidthInner * 0.11);
-
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, this.arcWidthInner * 0.45);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.rotate((windDegree) / 180 * Math.PI);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, this.arcWidthInner * 0.45);
+			this.ctxData.rotate(-angle + windRad);
 
 			if (windSpeed >= 0.5) {
-				this.ctxBg.beginPath();
-				this.ctxBg.moveTo(0, h + o);
-				this.ctxBg.lineTo(l, o);
-				this.ctxBg.lineTo(-l, o);
-				this.ctxBg.fill();
+				this.ctxData.beginPath();
+				this.ctxData.moveTo(0, h + o);
+				this.ctxData.lineTo(l, o);
+				this.ctxData.lineTo(-l, o);
+				this.ctxData.fill();
 			} else {
-				this.ctxBg.beginPath();
-				this.ctxBg.arc(0, 0, l, 0, 2*Math.PI);
-				this.ctxBg.fill();
-				this.ctxBg.closePath();
+				this.ctxData.beginPath();
+				this.ctxData.arc(0, 0, l, 0, arc);
+				this.ctxData.fill();
+				this.ctxData.closePath();
 			}
 
-			this.ctxBg.restore();
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
 	drawHumidityData(weatherDataArray, colors) {
 
-		this.ctxBg.fillStyle = this.colorTheme.text.data;
-		this.ctxBg.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
-
 		const hours = this.date.getHours() + this.tzOffset;
 
 		this.drawDataCircles(colors, hours);
 
 		if (this.settings.gradientMode) {
-			this.drawDataArcGradient(colors, hours);
+			this.drawDataArcGradient(this.ctxData, colors, hours);
 		}
+
+		this.ctxData.fillStyle = this.colorTheme.text.data;
+		this.ctxData.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
 
 		for (let i = 0; i < 12; i++) {
 
 			const weatherObject = weatherDataArray[i];
 			const humidity = weatherObject.Humidity;
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.fillText(Helpers.floatToString(humidity, 0) + "%", 0, 0);
-
-			this.ctxBg.restore();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius);
+			this.ctxData.rotate(-angle);
+			this.ctxData.fillText(Helpers.floatToString(humidity, 0) + "%", 0, 0);
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
 	drawCloudData(weatherDataArray, colors) {
-
-		this.ctxBg.fillStyle = this.colorTheme.text.data;
-		this.ctxBg.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
 
 		const hours = this.date.getHours() + this.tzOffset;
 
 		this.drawDataCircles(colors, hours);
 
 		if (this.settings.gradientMode) {
-			this.drawDataArcGradient(colors, hours);
+			this.drawDataArcGradient(this.ctxData, colors, hours);
 		}
+
+		this.ctxData.fillStyle = this.colorTheme.text.data;
+		this.ctxData.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
 
 		for (let i = 0; i < 12; i++) {
 
 			const weatherObject = weatherDataArray[i];
 			const cloudCover = weatherObject.TotalCloudCover;
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.rotate(-angle);
-			this.ctxBg.fillText(Helpers.floatToString(cloudCover, 0) + "%", 0, 0);
-
-			this.ctxBg.restore();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius);
+			this.ctxData.rotate(-angle);
+			this.ctxData.fillText(Helpers.floatToString(cloudCover, 0) + "%", 0, 0);
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
 	drawMoonData(weatherDataArray) {
 
-		this.ctxBg.fillStyle = 'white';
-		this.ctxBg.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
+		this.ctxData.fillStyle = 'white';
+		this.ctxData.font = this.arcWidthInner * 0.245 + "px " + this.fontFamily;
 
 		const hours = this.date.getHours() + this.tzOffset;
 
@@ -803,25 +810,23 @@ export class WeatherClockCanvas {
 			const zenith = limbAngle - tilt;
 			const altitude = weatherObject.moonPosition.altitude;
 			const upColor = (altitude > 0) ? brightUp : brightDown;
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.rotate(-angle);
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius);
+			this.ctxData.rotate(-angle);
 
 			moonPainter.setColors(upColor, dark);
 			moonPainter.paint(phase);
 
-			this.ctxBg.rotate(zenith);
-			this.ctxBg.drawImage(moonCanvas, -targetSize / 2, -targetSize / 2, targetSize, targetSize);
-			this.ctxBg.rotate(-zenith);
+			this.ctxData.rotate(zenith);
+			this.ctxData.drawImage(moonCanvas, -targetSize / 2, -targetSize / 2, targetSize, targetSize);
+			this.ctxData.rotate(-zenith);
 
-			this.ctxBg.fillText(Helpers.floatToString(fraction * 100, 0) + "%", 0, 0);
+			this.ctxData.fillText(Helpers.floatToString(fraction * 100, 0) + "%", 0, 0);
 
-			this.ctxBg.restore();
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
@@ -833,34 +838,30 @@ export class WeatherClockCanvas {
 				continue;
 			}
 
-			const angle = ((i + hours) * 30) * Math.PI/180;
+			const angle = ((i + hours) * 30) * deg2rad;
 
-			this.ctxBg.save();
-
-			this.ctxBg.translate(this.center.x, this.center.y);
-			this.ctxBg.rotate(angle);
-			this.ctxBg.translate(0, -this.rimCenterRadius);
-			this.ctxBg.beginPath();
-			this.ctxBg.arc(0, 0, this.arcWidthInner / 2, 0, 2*Math.PI);
-			this.ctxBg.fillStyle = colors[i];
-			this.ctxBg.fill();
-			this.ctxBg.closePath();
-
-			this.ctxBg.restore();
+			this.ctxData.translate(this.center.x, this.center.y);
+			this.ctxData.rotate(angle);
+			this.ctxData.translate(0, -this.rimCenterRadius);
+			this.ctxData.beginPath();
+			this.ctxData.arc(0, 0, this.arcWidthInner / 2, 0, arc);
+			this.ctxData.fillStyle = colors[i];
+			this.ctxData.fill();
+			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
 		}
 	}
 
-	drawDataArcGradient(colors, hours) {
+	drawDataArcGradient(ctx, colors, hours) {
 		const location = this.rimCenterRadius;
 		const width = this.arcWidthInner / 2;
 		const value = hours % 12;
 		const valueDeg = value / 12 * 360;
-		const startAngle = valueDeg * Math.PI / 180 - Math.PI / 2;
-		const endAngle = startAngle + 330 * Math.PI / 180;
-		this.drawArcGradient(location, width, startAngle, endAngle, colors);
+		const startAngle = valueDeg * deg2rad - Math.PI / 2;
+		const endAngle = startAngle + 330 * deg2rad;
+		this.drawArcGradient(ctx, location, width, startAngle, endAngle, colors);
 	}
 
-	drawArcGradient(location, width, startAngle, endAngle, colors) {
+	drawArcGradient(ctxTarget, location, width, startAngle, endAngle, colors) {
 
 		let canvas = document.createElement('canvas');
 		canvas.width = this.canvas.width;
@@ -884,7 +885,7 @@ export class WeatherClockCanvas {
 			colorStops,
 			location + (width + widthExtra),
 			location - (width + widthExtra),
-			{ resolutionFactor: 3 }
+			{ resolutionFactor: 2 }
 		);
 
 		ctx.lineWidth = 2 * widthExtra;
@@ -902,6 +903,6 @@ export class WeatherClockCanvas {
 		ctx.arc(this.center.x, this.center.y, location - (width + widthExtra), startAngle - o, endAngle + o);
 		ctx.stroke();
 
-		this.ctxBg.drawImage(canvas, 0, 0);
+		ctxTarget.drawImage(canvas, 0, 0);
 	}
 }
