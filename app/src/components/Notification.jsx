@@ -18,10 +18,12 @@ class Notification extends React.Component {
 
 	render() {
 
+		const open = this.props.open && this.props.status.length !== 0;
+
 		return (
 
 			<Dialog
-				open={this.props.open}
+				open={open}
 				onClose={this.handleDialogClose}
 				maxWidth="sm"
 			>

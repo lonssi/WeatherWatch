@@ -105,12 +105,16 @@ export const fetchWeatherData = (location) => dispatch => {
 
 	if (location.length === 0) {
 		dispatch({
-			type: OPEN_NOTIFICATION_DIALOG
-		});
-		dispatch({
 			type: SET_STATUS,
-			payload: 'Empty location name'
+			payload: "Please type a location name"
 		});
+		// Hack: without this timeout the position of the
+		// dialog will be wrong initially
+		setTimeout(() => {
+			dispatch({
+				type: OPEN_NOTIFICATION_DIALOG
+			});
+		}, 50);
 		return;
 	}
 
