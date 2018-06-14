@@ -9,6 +9,7 @@ import chroma from 'chroma-js';
 import _ from 'lodash';
 
 
+const identity = [1, 0, 0, 1, 0, 0, 1, 0, 0];
 const deg2rad = Math.PI / 180;
 const arc = 2 * Math.PI;
 
@@ -210,7 +211,7 @@ export class WeatherClockCanvas {
 		ctx.moveTo(0, range[0]);
 		ctx.lineTo(0, range[1]);
 		ctx.stroke();
-		ctx.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+		ctx.setTransform(...identity);
 	}
 
 	drawStaticElementsToCache() {
@@ -271,7 +272,7 @@ export class WeatherClockCanvas {
 			this.ctxData.lineTo(0, this.clockRadius / 14);
 			this.ctxData.stroke();
 
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -297,7 +298,9 @@ export class WeatherClockCanvas {
 		const startAngle = valueDeg * deg2rad - Math.PI / 2 - span / 2;
 		const endAngle = startAngle + arc;
 
-		this.drawArcGradient(this.ctxBg, location, width, startAngle, endAngle, colors);
+		const gradients = [{ startAngle, endAngle, colors }];
+
+		this.drawArcGradients(this.ctxBg, location, width, gradients);
 	}
 
 	drawWeatherBackground() {
@@ -307,7 +310,7 @@ export class WeatherClockCanvas {
 			this.ctxData.rotate(angle);
 		}
 		this.ctxData.drawImage(this.canvasBg, -this.center.x, -this.center.y);
-		this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+		this.ctxData.setTransform(...identity);
 	}
 
 	drawCelestialObjectIndicators() {
@@ -382,7 +385,7 @@ export class WeatherClockCanvas {
 			this.ctxData.arc(0, 0, thickness / 2, 0, arc);
 			this.ctxData.fillStyle = color;
 			this.ctxData.fill();
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 
 		const intervals = [];
@@ -520,7 +523,9 @@ export class WeatherClockCanvas {
 			for (let index in weatherDataArray) {
 				const weatherObject = weatherDataArray[index];
 				const measure = weatherObject[dataType.key];
-				const color = dataType.colorFunction(measure);
+				const roundFunction = dataType.roundFunction;
+				const rounded = roundFunction(measure);
+				const color = dataType.colorFunction(rounded);
 				const colorFinal = (color) ? color : this.colorTheme.bg.empty;
 				colors.push(colorFinal);
 			}
@@ -595,7 +600,7 @@ export class WeatherClockCanvas {
 			this.ctxData.rotate(-angle);
 			this.ctxData.drawImage(image, -width / 2, -height / 2, width, height);
 
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -628,7 +633,7 @@ export class WeatherClockCanvas {
 			this.ctxData.rotate(-angle);
 			this.ctxData.fillStyle = (tempInt > 0) ? this.colorTheme.text.data : '#FFF';
 			this.ctxData.fillText(Helpers.floatToString(tempShow, 0) + "°", textOffset, 0);
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -649,7 +654,18 @@ export class WeatherClockCanvas {
 
 			const weatherObject = weatherDataArray[i];
 			const precip = weatherObject.Precipitation1h;
-			const precipShow = (this.settings.unitMode.id === 'si') ? precip : precip * 0.0393701;
+
+			let precipShow;
+			if (this.settings.unitMode.id === 'si') {
+				precipShow = precip;
+			} else {
+				precipShow = precip * 0.0393701;
+				let floor = 0.01;
+				if (precipShow !== 0 && precipShow < floor) {
+					precipShow = floor;
+				}
+			}
+
 			const precision = (this.settings.unitMode.id === 'si') ? 1 : 2;
 			const symbol = (this.settings.unitMode.id === 'si') ? "mm" : "\"";
 			const offset1 = (this.settings.unitMode.id === 'si') ? 0.11 : 0.07;
@@ -662,7 +678,7 @@ export class WeatherClockCanvas {
 			this.ctxData.rotate(-angle);
 			this.ctxData.fillText(Helpers.floatToString(precipShow, precision), 0, -this.arcWidthInner * offset1);
 			this.ctxData.fillText(symbol, 0, this.arcWidthInner * offset2);
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -723,7 +739,7 @@ export class WeatherClockCanvas {
 				this.ctxData.closePath();
 			}
 
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -751,7 +767,7 @@ export class WeatherClockCanvas {
 			this.ctxData.translate(0, -this.rimCenterRadius);
 			this.ctxData.rotate(-angle);
 			this.ctxData.fillText(Helpers.floatToString(humidity, 0) + "%", 0, 0);
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -779,7 +795,7 @@ export class WeatherClockCanvas {
 			this.ctxData.translate(0, -this.rimCenterRadius);
 			this.ctxData.rotate(-angle);
 			this.ctxData.fillText(Helpers.floatToString(cloudCover, 0) + "%", 0, 0);
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -826,7 +842,7 @@ export class WeatherClockCanvas {
 
 			this.ctxData.fillText(Helpers.floatToString(fraction * 100, 0) + "%", 0, 0);
 
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
 	}
 
@@ -847,8 +863,85 @@ export class WeatherClockCanvas {
 			this.ctxData.arc(0, 0, this.arcWidthInner / 2, 0, arc);
 			this.ctxData.fillStyle = colors[i];
 			this.ctxData.fill();
-			this.ctxData.setTransform(1, 0, 0, 1, 0, 0, 1, 0, 0);
+			this.ctxData.setTransform(...identity);
 		}
+	}
+
+	divideGradient(colors, startAngle, endAngle) {
+
+		const gradients = [];
+		const n = colors.length;
+
+		const delta = (endAngle - startAngle) / (n - 1);
+
+		let angle1, angle2;
+		let angleLast = startAngle;
+
+		for (let i = 1; i < n; i++) {
+
+			angle1 = angleLast;
+			angle2 = angle1 + delta;
+			angleLast = angle2;
+
+			gradients.push({
+				startAngle: angle1,
+				endAngle: angle2,
+				colors: [colors[i - 1], colors[i]],
+				id: colors[i - 1].toString() + colors[i].toString()
+			});
+		}
+
+		const nGradients = gradients.length;
+
+		const gradientsMerged = [];
+		let group = [];
+
+		// Merge gradients with identical ids
+		for (let i = 1; i < nGradients; i++) {
+
+			group.push(gradients[i - 1]);
+
+			const same = gradients[i].id === gradients[i - 1].id;
+
+			if (!same || i === nGradients - 1) {
+				gradientsMerged.push({
+					startAngle: group[0].startAngle,
+					endAngle: group[group.length - 1].endAngle,
+					colors: group[0].colors,
+					id: group[0].id
+				});
+				group = [];
+			}
+		}
+
+		const nMerged = gradientsMerged.length;
+
+		const lastGradient = gradients[nGradients - 1];
+		const lastMerged = gradientsMerged[nMerged - 1];
+
+		if (lastGradient.id === lastMerged.id) {
+			gradientsMerged[nMerged - 1] = {
+				startAngle: lastMerged.startAngle,
+				endAngle: lastGradient.endAngle,
+				colors: lastMerged.colors,
+				id: lastMerged.id
+			}
+		} else {
+			gradientsMerged.push({
+				startAngle: lastMerged.endAngle,
+				endAngle: lastGradient.endAngle,
+				colors: lastGradient.colors,
+				id: lastGradient.id
+			});
+		}
+
+		if (gradientsMerged.length > 1) {
+			for (let i = 0; i < gradientsMerged.length - 1; i++) {
+				gradientsMerged[i].endAngle += 0.005;
+			}
+		}
+
+		return gradientsMerged;
 	}
 
 	drawDataArcGradient(ctx, colors, hours) {
@@ -858,10 +951,11 @@ export class WeatherClockCanvas {
 		const valueDeg = value / 12 * 360;
 		const startAngle = valueDeg * deg2rad - Math.PI / 2;
 		const endAngle = startAngle + 330 * deg2rad;
-		this.drawArcGradient(ctx, location, width, startAngle, endAngle, colors);
+		const gradients = this.divideGradient(colors, startAngle, endAngle);
+		this.drawArcGradients(ctx, location, width, gradients);
 	}
 
-	drawArcGradient(ctxTarget, location, width, startAngle, endAngle, colors) {
+	drawArcGradients(ctxTarget, location, width, gradients) {
 
 		let canvas = document.createElement('canvas');
 		canvas.width = this.canvas.width;
@@ -872,26 +966,40 @@ export class WeatherClockCanvas {
 
 		const widthExtra = 0.25 * this.unit;
 
-		const colorStops = [];
-		for (let i = 0; i < colors.length; i++) {
-			colorStops.push({ offset: i / (colors.length - 1), color: colors[i]});
-		}
+		const nGradients = gradients.length;
 
-		ctx.fillArcGradient(
-			this.center.x,
-			this.center.y,
-			startAngle,
-			endAngle,
-			colorStops,
-			location + (width + widthExtra),
-			location - (width + widthExtra),
-			{ resolutionFactor: 2 }
-		);
+		for (let i = 0; i < nGradients; i++) {
+
+			const gradient = gradients[i];
+			const gradientColors = gradient.colors;
+			const nColors = gradientColors.length;
+			const gradientStartAngle = gradient.startAngle;
+			const gradientEndAngle = gradient.endAngle;
+
+			const colorStops = [];
+			for (let i = 0; i < nColors; i++) {
+				colorStops.push({ offset: i / (nColors - 1), color: gradientColors[i]});
+			}
+
+			ctx.fillArcGradient(
+				this.center.x,
+				this.center.y,
+				gradientStartAngle,
+				gradientEndAngle,
+				colorStops,
+				location + (width + widthExtra),
+				location - (width + widthExtra),
+				{ resolutionFactor: 3 }
+			);
+		}
 
 		ctx.lineWidth = 2 * widthExtra;
 		ctx.strokeStyle = this.colorTheme.bg.dark;
 
-		const o = 0.05;
+		const startAngle = gradients[0].startAngle;
+		const endAngle = gradients[nGradients - 1].endAngle;
+
+		const o = (endAngle - startAngle !== arc) ? 0.05 : 0;
 
 		ctx.globalCompositeOperation = "destination-out";
 

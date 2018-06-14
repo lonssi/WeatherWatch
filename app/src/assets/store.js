@@ -11,31 +11,44 @@ export const dataTypes = [
 		id: 'temperature',
 		key: 'Temperature',
 		range: [-40, 40],
-		colorFunction: Colors.getTemperatureColor
+		colorFunction: Colors.getTemperatureColor,
+		roundFunction: Math.round
 	},
 	{
 		id: 'rain',
 		key: 'Precipitation1h',
-		range: [0, 12],
-		colorFunction: Colors.getPrecipitationColor
+		range: [0.05, 12],
+		colorFunction: Colors.getPrecipitationColor,
+		roundFunction: (x) => {
+			if (x < 0.05) {
+				return 0;
+			} else if (x < 1) {
+				return 1;
+			} else {
+				return Math.round(x)
+			}
+		}
 	},
 	{
 		id: 'wind',
 		key: 'WindSpeedMS',
 		range: [0, 27],
-		colorFunction: Colors.getWindColor
+		colorFunction: Colors.getWindColor,
+		roundFunction: Math.round
 	},
 	{
 		id: 'humidity',
 		key: 'Humidity',
 		range: [0, 100],
-		colorFunction: Colors.getHumidityColor
+		colorFunction: Colors.getHumidityColor,
+		roundFunction: Math.round
 	},
 	{
 		id: 'cloud',
 		key: 'TotalCloudCover',
 		range: [0, 100],
-		colorFunction: Colors.getCloudColor
+		colorFunction: Colors.getCloudColor,
+		roundFunction: Math.round
 	}
 ];
 

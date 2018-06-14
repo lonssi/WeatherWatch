@@ -143,7 +143,7 @@ let getTemperatureColor = function(x) {
 		x = Helpers.remapValue(x, [0, 40], [0, 1]);
 		color = colorScaleB(x);
 	}
-	return color.set('lab.l', '*1.275').set('lch.c', '*1.1');
+	return color.set('lab.l', '*1.275').set('lch.c', '*1.1').css();
 };
 
 let getPrecipitationColor = function(x) {
@@ -152,23 +152,23 @@ let getPrecipitationColor = function(x) {
 		return null;
 	} else {
 		x = Helpers.clamp((x - offset) / 12, 0, 1);
-		return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1');
+		return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1').css();
 	}
 };
 
 let getWindColor = function(x) {
 	x = Helpers.remapValue(x, [0, 27], [0, 1]);
-	return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1');
+	return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1').css();
 };
 
 let getHumidityColor = function(x) {
 	x = x / 100;
 	x = -Math.pow(x - 1, 2) + 1;
-	return humidityScale(x).set('lab.l', '*1.1');
+	return humidityScale(x).set('lab.l', '*1.1').css();
 };
 
 let getCloudColor = function(x) {
-	return (cloudScale((100 - x) / 100)).set('lab.l', '*1.1');
+	return (cloudScale((100 - x) / 100)).set('lab.l', '*1.1').css();
 };
 
 let getColorTheme = function(theme, hue) {
