@@ -12,7 +12,7 @@ The weather icons are originally from https://github.com/fmidev/opendata-resourc
 
 WeatherWatch is running at https://weatherwatch.tech
 
-<img src="clock.png" alt="drawing" width="350px"/>
+<img src="example.png" alt="drawing" width="350px"/>
 
 ### Requirements
 
