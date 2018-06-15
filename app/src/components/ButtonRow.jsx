@@ -82,7 +82,7 @@ class ButtonRow extends React.Component {
 		const futureButtonStyle = (clockSettings.futureMode) ?
 			{ backgroundColor: colorTheme.misc.select } : {};
 
-		const dataModeItems = availableDataModes.map(function(item) {
+		const dataModeItems = availableDataModes.map((item) => {
 			return (
 				<MenuItem
 					selected={item.id === clockSettings.dataMode.id}
@@ -97,7 +97,7 @@ class ButtonRow extends React.Component {
 					<ListItemText inset primary={item.text} />
 				</MenuItem>
 			);
-		}.bind(this));
+		});
 
 		return (
 			<div className="buttons-container">

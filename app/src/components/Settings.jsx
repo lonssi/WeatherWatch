@@ -99,15 +99,15 @@ class Settings extends React.Component {
 			maxWidth: "100%"
 		};
 
-		const colorThemeItems = this.props.colorThemes.map(function(item) {
+		const colorThemeItems = this.props.colorThemes.map((item) => {
 			return <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>;
 		});
 
-		const unitModeItems = availableUnitModes.map(function(item) {
+		const unitModeItems = availableUnitModes.map((item) => {
 			return <MenuItem key={item.id} value={item.id}>{item.text}</MenuItem>;
 		});
 
-		const clockSizeItems = availableClockSizes.map(function(item) {
+		const clockSizeItems = availableClockSizes.map((item) => {
 			return <MenuItem key={item.id} value={item.id}>{item.text}</MenuItem>;
 		});
 
