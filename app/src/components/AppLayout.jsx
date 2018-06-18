@@ -27,6 +27,7 @@ class AppLayout extends React.Component {
 	setBodyStyles = (colorTheme) => {
 
 		document.body.style.setProperty('--text-color', colorTheme.text.light);
+		document.body.style.setProperty('--text-color-dark', colorTheme.text.dark);
 		document.body.style.setProperty('--background-color', colorTheme.bg.light);
 		document.body.style.setProperty('--line-color', colorTheme.misc.border);
 		document.body.style.setProperty('--link-color', colorTheme.accent.light);
@@ -37,14 +38,11 @@ class AppLayout extends React.Component {
 		if (firstLoad) {
 			firstLoad = false;
 			setTimeout(function () {
-				document.body.style["-webkit-transition"] = "color 0.5s ease-out";
-				document.body.style["-moz-transition"] = "color 0.5s ease-out";
-				document.body.style["-o-transition"] = "color 0.5s ease-out";
-				document.body.style["transition"] = "color 0.5s ease-out";
-				document.body.style["-webkit-transition"] = "background-color 0.5s ease-out";
-				document.body.style["-moz-transition"] = "background-color 0.5s ease-out";
-				document.body.style["-o-transition"] = "background-color 0.5s ease-out";
-				document.body.style["transition"] = "background-color 0.5s ease-out";
+				const transition = "background-color 0.5s ease-out, color 0.5s ease-out";
+				document.body.style["-webkit-transition"] = transition;
+				document.body.style["-moz-transition"] = transition;
+				document.body.style["-o-transition"] = transition;
+				document.body.style["transition"] = transition;
 			}, 500);
 		}
 	};

@@ -195,12 +195,8 @@ class WeatherClock extends React.Component {
 		const updatedText = "last updated: " + (new Date(updateTime)).toLocaleString('en-GB', tz) + " " +
 			"UTC" + prefix + tzHours;
 
-		const styles = {
-			color: colorTheme.text.dark
-		};
-
 		return (
-			<div className="last-updated-container" style={styles}>
+			<div className="last-updated-container">
 				<div className="text-container">
 					{updatedText}
 				</div>
