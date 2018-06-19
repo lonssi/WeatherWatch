@@ -667,17 +667,16 @@ export class WeatherClockCanvas {
 			}
 
 			const precision = (this.settings.unitMode.id === 'si') ? 1 : 2;
-			const symbol = (this.settings.unitMode.id === 'si') ? "mm" : "\"";
-			const offset1 = (this.settings.unitMode.id === 'si') ? 0.11 : 0.07;
-			const offset2 = (this.settings.unitMode.id === 'si') ? 0.11 : 0.21;
+			const unit = (this.settings.unitMode.id === 'si') ? "mm" : "in";
+			const offset = 0.12;
 			const angle = ((i + hours) * 30) * deg2rad;
 
 			this.ctxData.translate(this.center.x, this.center.y);
 			this.ctxData.rotate(angle);
 			this.ctxData.translate(0, -this.rimCenterRadius);
 			this.ctxData.rotate(-angle);
-			this.ctxData.fillText(Helpers.floatToString(precipShow, precision), 0, -this.arcWidthInner * offset1);
-			this.ctxData.fillText(symbol, 0, this.arcWidthInner * offset2);
+			this.ctxData.fillText(Helpers.floatToString(precipShow, precision), 0, -this.arcWidthInner * offset);
+			this.ctxData.fillText(unit, 0, this.arcWidthInner * offset);
 			this.ctxData.setTransform(...identity);
 		}
 	}

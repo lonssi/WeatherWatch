@@ -134,14 +134,12 @@ class WeatherClock extends React.Component {
 		this.currentThemeId = this.props.colorTheme.id;
 		this.currentClockSizeId = this.props.clockSettings.clockSize.id;
 
-		this.startClockUpdate(UPDATE_ALL);
-		this.startWeatherPolling();
+		this.resume();
 	};
 
 	clearWeatherClock = () => {
 
-		this.stopWeatherPolling();
-		this.stopClockUpdate();
+		this.stop();
 
 		if (this.weatherclock) {
 			this.weatherclock.clear();
@@ -185,7 +183,6 @@ class WeatherClock extends React.Component {
 
 		const forecastTimezone = this.props.clockSettings.forecastTimezone;
 		const updateTime = this.props.weatherData.time;
-		const colorTheme = this.props.colorTheme;
 
 		const tz = (forecastTimezone) ? { timeZone: this.props.weatherData.timeZone } : {};
 		const tzHours = (forecastTimezone) ? this.props.weatherData.timeZoneOffset

@@ -8,7 +8,7 @@ const colorThemeDark = {
 	name: 'Dark',
 	bg: {
 		light: '#485865',
-		dark: '#3E4B57',
+		dark: '#3C4A55',
 		darker: '#38444F',
 		clock: '#FFFFFF',
 		empty: '#646B71'
@@ -23,12 +23,12 @@ const colorThemeDark = {
 		data: '#212121'
 	},
 	misc: {
-		menu: '#3E4B57',
-		clock: '#3E4B57',
+		menu: '#3C4A55',
+		clock: '#3C4A55',
 		border: '#323838',
 		hint: '#76898C',
 		down: '#344149',
-		select: '#3E4B57'
+		select: '#3C4A55'
 	},
 	static: {
 		moon_bright_up: '#9BAAAC',

@@ -37,7 +37,7 @@ class AppLayout extends React.Component {
 		// Add the transition effects after the page has loaded
 		if (firstLoad) {
 			firstLoad = false;
-			setTimeout(function () {
+			setTimeout(() => {
 				const transition = "background-color 0.5s ease-out, color 0.5s ease-out";
 				document.body.style["-webkit-transition"] = transition;
 				document.body.style["-moz-transition"] = transition;
