@@ -99,8 +99,8 @@ class ButtonRow extends React.Component {
 			);
 		});
 
-		return (
-			<div className="buttons-container">
+		const dataButton = (
+			<React.Fragment>
 				<Tooltip
 					title="Select data type"
 					enterDelay={Constants.tooltipDelay}
@@ -127,55 +127,70 @@ class ButtonRow extends React.Component {
 				>
 					{dataModeItems}
 				</Menu>
+			</React.Fragment>
+		);
 
-				<Tooltip
-					title="Settings"
-					enterDelay={Constants.tooltipDelay}
-					disableFocusListener={true}
+		const settingsButton = (
+			<Tooltip
+				title="Settings"
+				enterDelay={Constants.tooltipDelay}
+				disableFocusListener={true}
+			>
+				<Button
+					onClick={this.dotMenuButtonClick}
+					style={dotMenuBtnStyle}
+					aria-label="Settings"
 				>
-					<Button
-						onClick={this.dotMenuButtonClick}
-						style={dotMenuBtnStyle}
-						aria-label="Settings"
-					>
-						<div>
-							<FontAwesomeIcon icon={"ellipsis-v"} />
-						</div>
-					</Button>
-				</Tooltip>
+					<div>
+						<FontAwesomeIcon icon={"ellipsis-v"} />
+					</div>
+				</Button>
+			</Tooltip>
+		);
 
-				<Tooltip
-					title="About"
-					enterDelay={Constants.tooltipDelay}
-					disableFocusListener={true}
+		const aboutButton = (
+			<Tooltip
+				title="About"
+				enterDelay={Constants.tooltipDelay}
+				disableFocusListener={true}
+			>
+				<Button
+					onClick={this.aboutDialogButtonClick}
+					style={aboutDialogBtnStyle}
+					aria-label="About"
 				>
-					<Button
-						onClick={this.aboutDialogButtonClick}
-						style={aboutDialogBtnStyle}
-						aria-label="About"
-					>
-						<div>
-							<FontAwesomeIcon icon={"question"} />
-						</div>
-					</Button>
-				</Tooltip>
+					<div>
+						<FontAwesomeIcon icon={"question"} />
+					</div>
+				</Button>
+			</Tooltip>
+		);
 
-				<Tooltip
-					title="12 hours forward"
-					enterDelay={Constants.tooltipDelay}
-					disableFocusListener={true}
+		const futureButton = (
+			<Tooltip
+				title="12 hours forward"
+				enterDelay={Constants.tooltipDelay}
+				disableFocusListener={true}
+			>
+				<Button
+					onClick={this.futureButtonClick}
+					style={futureButtonStyle}
+					aria-label="12 hours forward"
 				>
-					<Button
-						onClick={this.futureButtonClick}
-						style={futureButtonStyle}
-						aria-label="12 hours forward"
-					>
-						<div className="button-unit-icon-container">
-							<FontAwesomeIcon icon={"clock"} />
-						</div>
-						+12h
-					</Button>
-				</Tooltip>
+					<div className="button-unit-icon-container">
+						<FontAwesomeIcon icon={"clock"} />
+					</div>
+					+12h
+				</Button>
+			</Tooltip>
+		);
+
+		return (
+			<div className="buttons-container">
+				{dataButton}
+				{settingsButton}
+				{aboutButton}
+				{futureButton}
 			</div>
 		);
 	}
