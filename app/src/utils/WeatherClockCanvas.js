@@ -219,9 +219,9 @@ export class WeatherClockCanvas {
 		this.ctxData.textBaseline = "middle";
 		this.ctxData.textAlign = "center";
 
+		this.drawCelestialObjectIndicators();
 		this.drawWeatherBackground();
 		this.drawClockFace();
-		this.drawCelestialObjectIndicators();
 		this.drawDataModeContent();
 	}
 
@@ -321,7 +321,7 @@ export class WeatherClockCanvas {
 		const dataMode = this.settings.dataMode.id;
 		const upColor = (dataMode === 'moon') ? this.colorTheme.static.moon_bright_up : '#FABA25';
 
-		this.ctxData.lineWidth = thickness;
+		this.ctxData.lineWidth = 1.1 * thickness;
 		this.ctxData.lineCap = 'butt';
 
 		let now = new Date(Helpers.getClosestStartingHourDate(this.date));
@@ -820,9 +820,6 @@ export class WeatherClockCanvas {
 			const weatherObject = weatherDataArray[i];
 			const fraction = weatherObject.moonIllumination.fraction;
 			const phase = weatherObject.moonIllumination.phase;
-			const tilt = weatherObject.moonPosition.parallacticAngle;
-			const limbAngle = weatherObject.moonIllumination.angle;
-			const zenith = limbAngle - tilt;
 			const altitude = weatherObject.moonPosition.altitude;
 			const upColor = (altitude > 0) ? brightUp : brightDown;
 			const angle = ((i + hours) * 30) * deg2rad;
@@ -835,9 +832,7 @@ export class WeatherClockCanvas {
 			moonPainter.setColors(upColor, dark);
 			moonPainter.paint(phase);
 
-			this.ctxData.rotate(zenith);
 			this.ctxData.drawImage(moonCanvas, -targetSize / 2, -targetSize / 2, targetSize, targetSize);
-			this.ctxData.rotate(-zenith);
 
 			this.ctxData.fillText(Helpers.floatToString(fraction * 100, 0) + "%", 0, 0);
 
