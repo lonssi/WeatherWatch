@@ -4,7 +4,7 @@ const devConfig = {
 };
 
 const prodConfig = {
-	WEATHER_API_URL: "https://api.weatherwatch.tech/weather/"
+	WEATHER_API_URL: "https://api.weatherwatch.host/weather/"
 };
 
 let loadConfiguration = function() {

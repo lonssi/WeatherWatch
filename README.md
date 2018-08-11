@@ -10,7 +10,7 @@ The weather forecast data is obtained from WeatherWatchServer, of which implemen
 
 The weather icons are originally from https://github.com/fmidev/opendata-resources/tree/master/symbols. A night version for each icon has been created and some small tweaks have been applied to achieve better symmetry.
 
-WeatherWatch is running at https://weatherwatch.tech
+WeatherWatch is running at https://weatherwatch.host
 
 <img src="example.png" alt="drawing" width="350px"/>
 
