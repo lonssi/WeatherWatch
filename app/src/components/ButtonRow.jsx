@@ -6,7 +6,7 @@ import { availableDataModes } from '../assets/store';
 import { openSettingsDialog, openAboutDialog } from '../actions/dialogActions';
 import { toggleFutureMode, setDataMode } from '../actions/clockActions';
 import { Constants } from '../utils/constants';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';

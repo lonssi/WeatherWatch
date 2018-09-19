@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchWeatherData, fetchWeatherDataLocation } from '../actions/weatherActions.js';
 import { Constants } from '../utils/constants';
 import { Helpers } from '../utils/helpers.js';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
