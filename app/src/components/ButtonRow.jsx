@@ -104,7 +104,6 @@ class ButtonRow extends React.Component {
 				<Tooltip
 					title="Select data type"
 					enterDelay={Constants.tooltipDelay}
-					disableFocusListener={true}
 				>
 					<Button
 						onClick={this.handleDataMenuTouchTap}
@@ -123,7 +122,7 @@ class ButtonRow extends React.Component {
 					anchorEl={this.state.anchorEl}
 					open={this.state.dataMenuOpen}
 					onClose={this.handleDataMenuRequestClose}
-					disableRestoreFocus={true}
+					disableRestoreFocus
 				>
 					{dataModeItems}
 				</Menu>
@@ -134,7 +133,6 @@ class ButtonRow extends React.Component {
 			<Tooltip
 				title="Settings"
 				enterDelay={Constants.tooltipDelay}
-				disableFocusListener={true}
 			>
 				<Button
 					onClick={this.dotMenuButtonClick}
@@ -152,7 +150,6 @@ class ButtonRow extends React.Component {
 			<Tooltip
 				title="About"
 				enterDelay={Constants.tooltipDelay}
-				disableFocusListener={true}
 			>
 				<Button
 					onClick={this.aboutDialogButtonClick}
@@ -170,7 +167,6 @@ class ButtonRow extends React.Component {
 			<Tooltip
 				title="12 hours forward"
 				enterDelay={Constants.tooltipDelay}
-				disableFocusListener={true}
 			>
 				<Button
 					onClick={this.futureButtonClick}

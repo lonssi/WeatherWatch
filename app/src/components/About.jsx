@@ -29,6 +29,7 @@ class About extends React.Component {
 				open={this.props.open}
 				onClose={this.handleDialogClose}
 				maxWidth="sm"
+				disableRestoreFocus
 			>
 				<DialogTitle>About</DialogTitle>
 				<DialogContent>

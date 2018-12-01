@@ -65,7 +65,6 @@ class TopElement extends React.Component {
 				<Tooltip
 					title="Get location"
 					enterDelay={Constants.tooltipDelay}
-					disableFocusListener={true}
 				>
 					<Button
 						onClick={this.locationButtonClicked}
@@ -99,7 +98,6 @@ class TopElement extends React.Component {
 				<Tooltip
 					title="Search"
 					enterDelay={Constants.tooltipDelay}
-					disableFocusListener={true}
 				>
 					<Button
 						onClick={this.searchButtonClicked}

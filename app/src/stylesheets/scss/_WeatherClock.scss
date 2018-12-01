@@ -79,14 +79,7 @@
 .unit-icon-container {
 	width: 16px;
 	height: 100%;
-	display: table;
 	text-align: center;
-
-	> i {
-		height: 100%;
-		display: table-cell;
-		vertical-align: middle;
-	}
 }
 
 .button-unit-icon-container {
