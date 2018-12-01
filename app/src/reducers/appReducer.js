@@ -35,15 +35,7 @@ let getInitialColorTheme = function(width) {
 		}
 	}
 
-	// If we are on a mobile device use the light
-	// color theme by default because of better
-	// visibility in outdoor lighting conditions
-	let colorThemes = Colors.getColorThemes();
-	if (width < 480) {
-		return colorThemes[1];
-	} else {
-		return colorThemes[0];
-	}
+	return Colors.getColorThemes()[1];
 };
 
 export default function(state = initialState, action) {
