@@ -73,7 +73,7 @@ class TopElement extends React.Component {
 						disabled={!navigator.geolocation}
 						aria-label="Get location"
 					>
-						<FontAwesomeIcon icon={"map-marker-alt"} />
+						<FontAwesomeIcon icon="map-marker-alt" />
 					</Button>
 				</Tooltip>
 			</div>
@@ -106,7 +106,7 @@ class TopElement extends React.Component {
 						style={buttonStyle}
 						aria-label="Search"
 					>
-						<FontAwesomeIcon icon={"search"} />
+						<FontAwesomeIcon icon="search" />
 					</Button>
 				</Tooltip>
 			</div>

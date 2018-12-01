@@ -27,7 +27,7 @@ class Notification extends React.Component {
 				onClose={this.handleDialogClose}
 				maxWidth="sm"
 			>
-				<DialogTitle>{"Error"}</DialogTitle>
+				<DialogTitle>Error</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						{this.props.status}

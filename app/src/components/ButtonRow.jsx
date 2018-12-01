@@ -142,7 +142,7 @@ class ButtonRow extends React.Component {
 					aria-label="Settings"
 				>
 					<div>
-						<FontAwesomeIcon icon={"ellipsis-v"} />
+						<FontAwesomeIcon icon="cog" />
 					</div>
 				</Button>
 			</Tooltip>
@@ -160,7 +160,7 @@ class ButtonRow extends React.Component {
 					aria-label="About"
 				>
 					<div>
-						<FontAwesomeIcon icon={"question"} />
+						<FontAwesomeIcon icon="question" />
 					</div>
 				</Button>
 			</Tooltip>
@@ -178,7 +178,7 @@ class ButtonRow extends React.Component {
 					aria-label="12 hours forward"
 				>
 					<div className="button-unit-icon-container">
-						<FontAwesomeIcon icon={"clock"} />
+						<FontAwesomeIcon icon="clock" />
 					</div>
 					+12h
 				</Button>

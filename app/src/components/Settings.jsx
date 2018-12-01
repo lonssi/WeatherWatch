@@ -163,7 +163,7 @@ class Settings extends React.Component {
 					open={this.props.open}
 					onClose={this.handleDialogClose}
 				>
-					<DialogTitle>{"Settings"}</DialogTitle>
+					<DialogTitle>Settings</DialogTitle>
 					<DialogContent>
 						<div className="settings-container">
 							{checkBoxes}

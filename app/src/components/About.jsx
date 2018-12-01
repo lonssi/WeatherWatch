@@ -30,7 +30,7 @@ class About extends React.Component {
 				onClose={this.handleDialogClose}
 				maxWidth="sm"
 			>
-				<DialogTitle>{"About"}</DialogTitle>
+				<DialogTitle>About</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						The weather data is provided by the Finnish Meteorological Institute.
