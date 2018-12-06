@@ -1,4 +1,3 @@
-
 export const INITIALIZE_CLIENT = 'INITIALIZE_CLIENT';
 
 export const SET_STATUS = 'SET_STATUS';

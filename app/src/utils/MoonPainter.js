@@ -3,7 +3,6 @@
  */
 
 export function MoonPainter(canvas, size) {
-
 	this.canvas = canvas;
 	this.ctx = canvas.getContext('2d');
 
@@ -18,7 +17,6 @@ export function MoonPainter(canvas, size) {
 }
 
 MoonPainter.prototype = {
-
 	setColors: function(highlight, lowlight) {
 		this.highlight = highlight;
 		this.lowlight = lowlight;
@@ -35,7 +33,14 @@ MoonPainter.prototype = {
 
 	_drawPhase: function(phase) {
 		this.ctx.beginPath();
-		this.ctx.arc(this.radius, this.radius, this.radius, -Math.PI/2, Math.PI/2, true);
+		this.ctx.arc(
+			this.radius,
+			this.radius,
+			this.radius,
+			-Math.PI / 2,
+			Math.PI / 2,
+			true
+		);
 		this.ctx.closePath();
 		this.ctx.fillStyle = this.lowlight;
 		this.ctx.fill();
@@ -44,7 +49,14 @@ MoonPainter.prototype = {
 		this.ctx.scale(phase, 1);
 		this.ctx.translate(-this.radius, -this.radius);
 		this.ctx.beginPath();
-		this.ctx.arc(this.radius, this.radius, this.radius, -Math.PI/2, Math.PI/2, true);
+		this.ctx.arc(
+			this.radius,
+			this.radius,
+			this.radius,
+			-Math.PI / 2,
+			Math.PI / 2,
+			true
+		);
 		this.ctx.closePath();
 		this.ctx.fillStyle = phase > 0 ? this.highlight : this.lowlight;
 		this.ctx.fill();
@@ -68,4 +80,4 @@ MoonPainter.prototype = {
 		}
 		this.ctx.restore();
 	}
-}
+};

@@ -1,7 +1,10 @@
 import {
-	OPEN_ABOUT_DIALOG, CLOSE_ABOUT_DIALOG,
-	OPEN_SETTINGS_DIALOG, CLOSE_SETTINGS_DIALOG,
-	OPEN_NOTIFICATION_DIALOG, CLOSE_NOTIFICATION_DIALOG
+	OPEN_ABOUT_DIALOG,
+	CLOSE_ABOUT_DIALOG,
+	OPEN_SETTINGS_DIALOG,
+	CLOSE_SETTINGS_DIALOG,
+	OPEN_NOTIFICATION_DIALOG,
+	CLOSE_NOTIFICATION_DIALOG
 } from '../actions/types';
 
 const initialState = {
@@ -45,4 +48,4 @@ export default function(state = initialState, action) {
 		default:
 			return state;
 	}
-};
+}

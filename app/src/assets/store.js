@@ -1,6 +1,5 @@
 import { Colors } from '../utils/colors';
 
-
 export const availableUnitModes = [
 	{ id: 'si', text: 'SI' },
 	{ id: 'imperial', text: 'Imperial' }
@@ -19,13 +18,13 @@ export const dataTypes = [
 		key: 'Precipitation1h',
 		range: [0.05, 12],
 		colorFunction: Colors.getPrecipitationColor,
-		roundFunction: (x) => {
+		roundFunction: x => {
 			if (x < 0.05) {
 				return 0;
 			} else if (x < 1) {
 				return 1;
 			} else {
-				return Math.round(x)
+				return Math.round(x);
 			}
 		}
 	},
@@ -105,5 +104,5 @@ export const availableClockSizes = [
 		id: 'large',
 		text: 'Large',
 		size: 5.5
-	},
+	}
 ];

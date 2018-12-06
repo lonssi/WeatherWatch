@@ -1,13 +1,11 @@
 import _ from 'lodash';
 import { Constants } from './constants.js';
 
-
 let clamp = function(num, min, max) {
 	return num <= min ? min : num >= max ? max : num;
-}
+};
 
 export const Helpers = {
-
 	clamp,
 
 	/**
@@ -31,8 +29,8 @@ export const Helpers = {
 	 * @param  {String} value
 	 * @return {Number}
 	 */
-	numberLength: (value) => {
-		return (Math.abs(parseInt(value, 10))).toString().length;
+	numberLength: value => {
+		return Math.abs(parseInt(value, 10)).toString().length;
 	},
 
 	hideVirtualKeyboard: () => {
@@ -42,7 +40,7 @@ export const Helpers = {
 			document.activeElement.blur &&
 			typeof document.activeElement.blur === 'function'
 		) {
-			document.activeElement.blur()
+			document.activeElement.blur();
 		}
 	},
 
@@ -52,7 +50,7 @@ export const Helpers = {
 	 * @param  {String} value
 	 * @return {Boolean or null}
 	 */
-	toBoolean: (value) => {
+	toBoolean: value => {
 		try {
 			value = JSON.parse(value);
 			if (_.isBoolean(value)) {
@@ -71,7 +69,7 @@ export const Helpers = {
 	 * @param  {String} value
 	 * @return {Number or null}
 	 */
-	toNumber: (value) => {
+	toNumber: value => {
 		try {
 			value = JSON.parse(value);
 			if (_.isNumber(value)) {
@@ -84,9 +82,13 @@ export const Helpers = {
 		}
 	},
 
-	getClosestStartingHourDate: (date) => {
-		return date.getTime() - date.getMinutes() * Constants.minuteEpochs -
-			date.getSeconds() * Constants.secondEpochs - date.getMilliseconds();
+	getClosestStartingHourDate: date => {
+		return (
+			date.getTime() -
+			date.getMinutes() * Constants.minuteEpochs -
+			date.getSeconds() * Constants.secondEpochs -
+			date.getMilliseconds()
+		);
 	},
 
 	dataIsOutdated: (data, strict) => {
@@ -94,7 +96,7 @@ export const Helpers = {
 			return true;
 		}
 		const diff = new Date() - data.time;
-		const threshold = (strict) ? Constants.hourEpochs : 12 * Constants.hourEpochs;
+		const threshold = strict ? Constants.hourEpochs : 12 * Constants.hourEpochs;
 		return diff >= threshold;
 	},
 
@@ -108,8 +110,11 @@ export const Helpers = {
 	 */
 	remapValue: (value, srcRange, trgRange) => {
 		value = clamp(value, srcRange[0], srcRange[1]);
-		return (value - srcRange[0]) / (srcRange[1] - srcRange[0]) *
-			(trgRange[1] - trgRange[0]) + trgRange[0];
+		return (
+			((value - srcRange[0]) / (srcRange[1] - srcRange[0])) *
+				(trgRange[1] - trgRange[0]) +
+			trgRange[0]
+		);
 	},
 
 	/**
@@ -152,4 +157,4 @@ export const Helpers = {
 		}
 		return stateCopy;
 	}
-}
+};

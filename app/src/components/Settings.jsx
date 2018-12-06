@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { closeSettingsDialog } from '../actions/dialogActions';
 import { setColorTheme } from '../actions/appActions';
 import {
-	setUnitMode, toggleForecastTimezoneMode, toggleGradientMode,
-	toggleSecondHandMode, setClockSize
+	setUnitMode,
+	toggleForecastTimezoneMode,
+	toggleGradientMode,
+	toggleSecondHandMode,
+	setClockSize
 } from '../actions/clockActions';
-import {
-	availableUnitModes, availableClockSizes
-} from '../assets/store';
+import { availableUnitModes, availableClockSizes } from '../assets/store';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -24,9 +25,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import { Colors } from '../utils/colors.js';
 
-
 class Settings extends React.Component {
-
 	handleDialogClose = () => {
 		this.props.closeSettingsDialog();
 	};
@@ -43,15 +42,15 @@ class Settings extends React.Component {
 		this.props.toggleSecondHandMode();
 	};
 
-	colorThemeChange = (event) => {
+	colorThemeChange = event => {
 		this.props.setColorTheme(event.target.value);
 	};
 
-	unitModeChange = (event) => {
+	unitModeChange = event => {
 		this.props.setUnitMode(event.target.value);
 	};
 
-	clockSizeChange = (event) => {
+	clockSizeChange = event => {
 		this.props.setClockSize(event.target.value);
 	};
 
@@ -92,23 +91,34 @@ class Settings extends React.Component {
 	};
 
 	getSelectFields = () => {
-
 		const selectFieldStyle = {
 			color: this.props.colorTheme.text.light,
 			width: '280px',
-			maxWidth: "100%"
+			maxWidth: '100%'
 		};
 
-		const colorThemeItems = this.props.colorThemes.map((item) => {
-			return <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>;
+		const colorThemeItems = this.props.colorThemes.map(item => {
+			return (
+				<MenuItem key={item.id} value={item.id}>
+					{item.name}
+				</MenuItem>
+			);
 		});
 
-		const unitModeItems = availableUnitModes.map((item) => {
-			return <MenuItem key={item.id} value={item.id}>{item.text}</MenuItem>;
+		const unitModeItems = availableUnitModes.map(item => {
+			return (
+				<MenuItem key={item.id} value={item.id}>
+					{item.text}
+				</MenuItem>
+			);
 		});
 
-		const clockSizeItems = availableClockSizes.map((item) => {
-			return <MenuItem key={item.id} value={item.id}>{item.text}</MenuItem>;
+		const clockSizeItems = availableClockSizes.map(item => {
+			return (
+				<MenuItem key={item.id} value={item.id}>
+					{item.text}
+				</MenuItem>
+			);
 		});
 
 		return (
@@ -153,7 +163,6 @@ class Settings extends React.Component {
 	};
 
 	render() {
-
 		const switches = this.getSwitches();
 		const selectFields = this.getSelectFields();
 
@@ -195,13 +204,13 @@ Settings.propTypes = {
 };
 
 export default connect(
-	(state) => {
+	state => {
 		return {
 			open: state.dialogReducer.settingsDialogOpen,
 			clockSettings: state.clockReducer,
 			colorTheme: state.appReducer.colorTheme,
-			colorThemes: Colors.getColorThemes(),
-		}
+			colorThemes: Colors.getColorThemes()
+		};
 	},
 	{
 		closeSettingsDialog,

@@ -1,34 +1,35 @@
 import {
-	RESET_WEATHER_DATA, FETCH_WEATHER_DATA_SUCCEEDED,
-	FETCH_WEATHER_DATA_FAILED, FETCH_WEATHER_DATA_STARTED,
-	OPEN_NOTIFICATION_DIALOG, SET_STATUS
+	RESET_WEATHER_DATA,
+	FETCH_WEATHER_DATA_SUCCEEDED,
+	FETCH_WEATHER_DATA_FAILED,
+	FETCH_WEATHER_DATA_STARTED,
+	OPEN_NOTIFICATION_DIALOG,
+	SET_STATUS
 } from './types';
 import _ from 'lodash';
 import xss from 'xss';
 import Configuration from '../configuration';
 import { Constants } from '../utils/constants';
 
-
 /**
  * Check that the weather data version matches the local version
  * If not, reload the page
  * @param  {Object} data - weather data object
  */
-let checkVersion = (data) => {
+let checkVersion = data => {
 	if (data.version !== Constants.version) {
 		window.location.reload();
 	}
-}
+};
 
 let fetchData = (location, tracking, dispatch) => {
-
 	const locStr = encodeURIComponent(location.trim());
 	const url = Configuration.WEATHER_API_URL + locStr;
 
 	fetch(url)
 		.then(result => result.json())
 		.then(data => {
-			if (data.status !== "success") {
+			if (data.status !== 'success') {
 				throw new Error(data.message);
 			}
 			return data;
@@ -40,9 +41,10 @@ let fetchData = (location, tracking, dispatch) => {
 				type: FETCH_WEATHER_DATA_SUCCEEDED,
 				payload: { data, tracking }
 			});
-		}
-		).catch(error => {
-			const errorMessage = (error.name !== "Error") ? "Unable to connect to server" : error.message;
+		})
+		.catch(error => {
+			const errorMessage =
+				error.name !== 'Error' ? 'Unable to connect to server' : error.message;
 			dispatch({
 				type: FETCH_WEATHER_DATA_FAILED
 			});
@@ -56,29 +58,27 @@ let fetchData = (location, tracking, dispatch) => {
 		});
 };
 
-export const fetchWeatherDataLocation = (location) => dispatch => {
-
-	let success = (position) => {
-		const location = position.coords.longitude + "," + position.coords.latitude;
+export const fetchWeatherDataLocation = location => dispatch => {
+	let success = position => {
+		const location = position.coords.longitude + ',' + position.coords.latitude;
 		fetchData(location, true, dispatch);
 	};
 
-	let failure = (error) => {
-
+	let failure = error => {
 		let errorMessage;
 
 		switch (error.code) {
 			case error.PERMISSION_DENIED:
-				errorMessage = "Location request denied"
+				errorMessage = 'Location request denied';
 				break;
 			case error.POSITION_UNAVAILABLE:
-				errorMessage = "Location information unavailable"
+				errorMessage = 'Location information unavailable';
 				break;
 			case error.TIMEOUT:
-				errorMessage = "Location request timed out"
+				errorMessage = 'Location request timed out';
 				break;
 			default:
-				errorMessage = "Unknown error occurred"
+				errorMessage = 'Unknown error occurred';
 				break;
 		}
 
@@ -101,12 +101,11 @@ export const fetchWeatherDataLocation = (location) => dispatch => {
 	navigator.geolocation.getCurrentPosition(success, failure);
 };
 
-export const fetchWeatherData = (location) => dispatch => {
-
+export const fetchWeatherData = location => dispatch => {
 	if (location.length === 0) {
 		dispatch({
 			type: SET_STATUS,
-			payload: "Please type a location name"
+			payload: 'Please type a location name'
 		});
 		// Hack: without this timeout the position of the
 		// dialog will be wrong initially

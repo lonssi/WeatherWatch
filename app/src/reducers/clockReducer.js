@@ -1,15 +1,20 @@
 import _ from 'lodash';
 import xss from 'xss';
 import {
-	TOGGLE_FUTURE_MODE, SET_UNIT_MODE, SET_DATA_MODE,
-	TOGGLE_FORECAST_TIMEZONE_MODE, TOGGLE_GRADIENT_MODE,
-	TOGGLE_SECOND_HAND_MODE, SET_CLOCK_SIZE
+	TOGGLE_FUTURE_MODE,
+	SET_UNIT_MODE,
+	SET_DATA_MODE,
+	TOGGLE_FORECAST_TIMEZONE_MODE,
+	TOGGLE_GRADIENT_MODE,
+	TOGGLE_SECOND_HAND_MODE,
+	SET_CLOCK_SIZE
 } from '../actions/types';
 import { Helpers } from '../utils/helpers.js';
 import {
-	availableUnitModes, availableDataModes, availableClockSizes
+	availableUnitModes,
+	availableDataModes,
+	availableClockSizes
 } from '../assets/store';
-
 
 let getMatchingUnitMode = function(value) {
 	if (_.isString(value)) {
@@ -42,7 +47,6 @@ let getMatchingClockSize = function(value, cache) {
 };
 
 let getInitialState = function() {
-
 	let state = {
 		futureMode: false,
 		unitMode: availableUnitModes[0],
@@ -50,7 +54,7 @@ let getInitialState = function() {
 		forecastTimezone: true,
 		gradientMode: true,
 		clockSize: availableClockSizes[1],
-		secondHand: false,
+		secondHand: false
 	};
 
 	let types = [
@@ -91,17 +95,29 @@ export default function(state = initialState, action) {
 			return Helpers.stateToggleUtil('secondHand', state, true);
 		case SET_UNIT_MODE:
 			return Helpers.stateSelectUtil(
-				action.payload, 'unitMode', getMatchingUnitMode, state, true
+				action.payload,
+				'unitMode',
+				getMatchingUnitMode,
+				state,
+				true
 			);
 		case SET_DATA_MODE:
 			return Helpers.stateSelectUtil(
-				action.payload, 'dataMode', getMatchingDataMode, state, true
+				action.payload,
+				'dataMode',
+				getMatchingDataMode,
+				state,
+				true
 			);
 		case SET_CLOCK_SIZE:
 			return Helpers.stateSelectUtil(
-				action.payload, 'clockSize', getMatchingClockSize, state, true
+				action.payload,
+				'clockSize',
+				getMatchingClockSize,
+				state,
+				true
 			);
 		default:
 			return state;
 	}
-};
+}

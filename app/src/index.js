@@ -20,8 +20,18 @@ import { faCloud } from '@fortawesome/free-solid-svg-icons/faCloud';
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon';
 
 library.add(
-	faMapMarkerAlt, faSearch, faClock, faQuestion, faCog, faSun,
-	faThermometerHalf, faTint, faFlag, faBullseye, faCloud, faMoon
+	faMapMarkerAlt,
+	faSearch,
+	faClock,
+	faQuestion,
+	faCog,
+	faSun,
+	faThermometerHalf,
+	faTint,
+	faFlag,
+	faBullseye,
+	faCloud,
+	faMoon
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));

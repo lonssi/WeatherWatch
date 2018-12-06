@@ -9,29 +9,19 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
 class Notification extends React.Component {
-
 	handleDialogClose = () => {
 		this.props.closeNotificationDialog();
 	};
 
 	render() {
-
 		const open = this.props.open && this.props.status.length !== 0;
 
 		return (
-
-			<Dialog
-				open={open}
-				onClose={this.handleDialogClose}
-				maxWidth="sm"
-			>
+			<Dialog open={open} onClose={this.handleDialogClose} maxWidth="sm">
 				<DialogTitle>Error</DialogTitle>
 				<DialogContent>
-					<DialogContentText>
-						{this.props.status}
-					</DialogContentText>
+					<DialogContentText>{this.props.status}</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 					<Button
@@ -54,11 +44,11 @@ Notification.propTypes = {
 };
 
 export default connect(
-	(state) => {
+	state => {
 		return {
 			open: state.dialogReducer.notificationDialogOpen,
 			status: state.appReducer.status
-		}
+		};
 	},
 	{ closeNotificationDialog }
 )(Notification);

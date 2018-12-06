@@ -2,8 +2,6 @@
 set -x
 set -e
 
-export METEOR_LOCAL=$([ $(uname) == "Darwin" ] && echo "~/.meteor-linux" || echo "~/.meteor")
-
 docker build -t weatherwatch .
 
 git submodule init && git submodule update

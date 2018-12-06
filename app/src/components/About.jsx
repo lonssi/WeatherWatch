@@ -9,20 +9,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
 class About extends React.Component {
-
 	handleDialogClose = () => {
 		this.props.closeAboutDialog();
 	};
 
 	render() {
-
-		const link = (
-			<a href="https://github.com/lonssi/WeatherWatch">
-				GitHub
-			</a>
-		);
+		const link = <a href="https://github.com/lonssi/WeatherWatch">GitHub</a>;
 
 		return (
 			<Dialog
@@ -34,9 +27,10 @@ class About extends React.Component {
 				<DialogTitle>About</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						The weather data is provided by the Finnish Meteorological Institute.
-						<br/>
-						<br/>
+						The weather data is provided by the Finnish Meteorological
+						Institute.
+						<br />
+						<br />
 						WeatherWatch is open source: {link}
 					</DialogContentText>
 				</DialogContent>
@@ -60,10 +54,10 @@ About.propTypes = {
 };
 
 export default connect(
-	(state) => {
+	state => {
 		return {
-			open: state.dialogReducer.aboutDialogOpen,
-		}
+			open: state.dialogReducer.aboutDialogOpen
+		};
 	},
 	{ closeAboutDialog }
 )(About);

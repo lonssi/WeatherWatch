@@ -23,20 +23,27 @@ class ArcGradientOptions {
 			}
 		}
 
-		options = Object.assign({
-			useDegrees: false,
-			resolutionFactor: 8,
-		}, options);
+		options = Object.assign(
+			{
+				useDegrees: false,
+				resolutionFactor: 8
+			},
+			options
+		);
 
 		validateParam(
-			(options.resolutionFactor instanceof Number | typeof options.resolutionFactor === 'number') &&
+			(options.resolutionFactor instanceof Number) |
+				(typeof options.resolutionFactor === 'number') &&
 				options.resolutionFactor > 0,
-			`ArcGradientOptions.resolutionFactor must be a Number greater than 0.  Given: ${options.resolutionFactor}`,
-			true);
+			`ArcGradientOptions.resolutionFactor must be a Number greater than 0.  Given: ${
+				options.resolutionFactor
+			}`,
+			true
+		);
 
 		Object.assign(this, options);
 	}
-};
+}
 
 const newCanvas = {};
 
@@ -54,7 +61,7 @@ let generateGradientImgData = function generateGradientImgData(width, colorStops
 	ctx.fillStyle = gradient;
 	ctx.fillRect(0, 0, width, 1);
 	return ctx.getImageData(0, 0, width, 1);
-}
+};
 
 /**
  * @description Strokes an arc using a linear gradient.
@@ -65,12 +72,28 @@ let generateGradientImgData = function generateGradientImgData(width, colorStops
  * @param {number} endAngle Where in the circle to end the stroke.
  * @param {ArcGradientOptions} options Additional options.
  */
-newCanvas.strokeArcGradient = function(x, y, radius, startAngle, endAngle, colorStops, options) {
+newCanvas.strokeArcGradient = function(
+	x,
+	y,
+	radius,
+	startAngle,
+	endAngle,
+	colorStops,
+	options
+) {
 	options = new ArcGradientOptions(options);
 	let lineWidth = this.lineWidth;
-	this.fillArcGradient(x, y, startAngle, endAngle, colorStops, radius + lineWidth / 2, radius - lineWidth / 2,
-		options);
-}
+	this.fillArcGradient(
+		x,
+		y,
+		startAngle,
+		endAngle,
+		colorStops,
+		radius + lineWidth / 2,
+		radius - lineWidth / 2,
+		options
+	);
+};
 
 /**
  * @description Fills a sector or a portion of a ring with a linear gradient.
@@ -83,32 +106,41 @@ newCanvas.strokeArcGradient = function(x, y, radius, startAngle, endAngle, color
  *							 arc. (default: 0)
  * @param {ArcGradientOptions} options Additional options.
  */
-newCanvas.fillArcGradient = function (x, y, startAngle, endAngle, colorStops, outerRadius, innerRadius = 0, options) {
-
+newCanvas.fillArcGradient = function(
+	x,
+	y,
+	startAngle,
+	endAngle,
+	colorStops,
+	outerRadius,
+	innerRadius = 0,
+	options
+) {
 	options = new ArcGradientOptions(options);
 
 	let oldLineWidth = this.lineWidth,
 		oldStrokeStyle = this.strokeStyle;
 
 	if (options.useDegrees) {
-		startAngle = startAngle * Math.PI / 180;
-		endAngle = endAngle * Math.PI / 180;
+		startAngle = (startAngle * Math.PI) / 180;
+		endAngle = (endAngle * Math.PI) / 180;
 	}
 
-	const oneColor = !!colorStops.reduce(function(a, b) { return (a.color === b.color) ? a : NaN; });
+	const oneColor = !!colorStops.reduce(function(a, b) {
+		return a.color === b.color ? a : NaN;
+	});
 
 	if (oneColor) {
-
 		this.strokeStyle = colorStops[0].color;
 		this.lineWidth = outerRadius - innerRadius;
 		this.beginPath();
 		this.arc(x, y, outerRadius - this.lineWidth / 2, startAngle, endAngle);
 		this.stroke();
-
 	} else {
-
 		const deltaArcAngle = endAngle - startAngle;
-		const gradientWidth = Math.floor(outerRadius * Math.abs(deltaArcAngle) * options.resolutionFactor);
+		const gradientWidth = Math.floor(
+			outerRadius * Math.abs(deltaArcAngle) * options.resolutionFactor
+		);
 		const gData = generateGradientImgData(gradientWidth, colorStops).data;
 		const delta = deltaArcAngle / gradientWidth;
 
@@ -120,7 +152,9 @@ newCanvas.fillArcGradient = function (x, y, startAngle, endAngle, colorStops, ou
 			let gradi = i * 4,
 				theta = startAngle + i * delta;
 
-			this.strokeStyle = `rgb(${gData[gradi]}, ${gData[gradi + 1]}, ${gData[gradi + 2]})`;
+			this.strokeStyle = `rgb(${gData[gradi]}, ${gData[gradi + 1]}, ${
+				gData[gradi + 2]
+			})`;
 
 			cos = Math.cos(theta);
 			sin = Math.sin(theta);
@@ -134,17 +168,16 @@ newCanvas.fillArcGradient = function (x, y, startAngle, endAngle, colorStops, ou
 
 	this.lineWidth = oldLineWidth;
 	this.strokeStyle = oldStrokeStyle;
-}
+};
 
 let addProperties = function(original, extension) {
-
 	for (let key in extension) {
 		if (original.hasOwnProperty(key)) {
 			continue;
 		}
 		Object.defineProperty(original, key, {
 			value: extension[key],
-			writable: true,
+			writable: true
 		});
 	}
 };

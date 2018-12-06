@@ -13,42 +13,40 @@ import Settings from './Settings';
 import TopElement from './TopElement';
 import WeatherClock from './WeatherClock';
 
-
 let firstLoad = true;
 
 class AppLayout extends React.Component {
-
 	componentWillMount() {
 		Images.loadImages();
 		this.props.initializeClient(window.innerWidth);
 		this.props.fetchWeatherDataCached();
-	};
+	}
 
-	setBodyStyles = (colorTheme) => {
-
+	setBodyStyles = colorTheme => {
 		document.body.style.setProperty('--text-color', colorTheme.text.light);
 		document.body.style.setProperty('--text-color-dark', colorTheme.text.dark);
 		document.body.style.setProperty('--background-color', colorTheme.bg.light);
 		document.body.style.setProperty('--line-color', colorTheme.misc.border);
 		document.body.style.setProperty('--link-color', colorTheme.accent.light);
-		const linkHoverColor = chroma(colorTheme.accent.light).brighten(1).css();
+		const linkHoverColor = chroma(colorTheme.accent.light)
+			.brighten(1)
+			.css();
 		document.body.style.setProperty('--link-hover-color', linkHoverColor);
 
 		// Add the transition effects after the page has loaded
 		if (firstLoad) {
 			firstLoad = false;
 			setTimeout(() => {
-				const transition = "background-color 0.5s ease-out, color 0.5s ease-out";
-				document.body.style["-webkit-transition"] = transition;
-				document.body.style["-moz-transition"] = transition;
-				document.body.style["-o-transition"] = transition;
-				document.body.style["transition"] = transition;
+				const transition = 'background-color 0.5s ease-out, color 0.5s ease-out';
+				document.body.style['-webkit-transition'] = transition;
+				document.body.style['-moz-transition'] = transition;
+				document.body.style['-o-transition'] = transition;
+				document.body.style['transition'] = transition;
 			}, 500);
 		}
 	};
 
 	render() {
-
 		const colorTheme = this.props.colorTheme;
 
 		if (!colorTheme) {
@@ -59,9 +57,9 @@ class AppLayout extends React.Component {
 
 		const dialogs = (
 			<React.Fragment>
-				<Notification/>
-				<About/>
-				<Settings/>
+				<Notification />
+				<About />
+				<Settings />
 			</React.Fragment>
 		);
 
@@ -69,8 +67,8 @@ class AppLayout extends React.Component {
 			<MuiThemeProvider theme={Colors.getMuiTheme(colorTheme)}>
 				<div className="content-container">
 					{dialogs}
-					<TopElement/>
-					<WeatherClock/>
+					<TopElement />
+					<WeatherClock />
 				</div>
 			</MuiThemeProvider>
 		);
@@ -82,10 +80,10 @@ AppLayout.propTypes = {
 };
 
 export default connect(
-	(state) => {
+	state => {
 		return {
-			colorTheme: state.appReducer.colorTheme,
-		}
+			colorTheme: state.appReducer.colorTheme
+		};
 	},
 	{
 		initializeClient,

@@ -8,5 +8,5 @@ export default combineReducers({
 	appReducer,
 	clockReducer,
 	weatherReducer,
-	dialogReducer,
+	dialogReducer
 });

@@ -1,14 +1,15 @@
 import {
-	FETCH_WEATHER_DATA_SUCCEEDED, FETCH_WEATHER_DATA_FAILED,
-	RESET_WEATHER_DATA, FETCH_WEATHER_DATA_STARTED
+	FETCH_WEATHER_DATA_SUCCEEDED,
+	FETCH_WEATHER_DATA_FAILED,
+	RESET_WEATHER_DATA,
+	FETCH_WEATHER_DATA_STARTED
 } from '../actions/types';
-
 
 const initialState = {
 	location: null,
 	tracking: false,
 	weatherData: null,
-	loading: false,
+	loading: false
 };
 
 export default function(state = initialState, action) {
@@ -17,7 +18,7 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				loading: true
-			}
+			};
 		case FETCH_WEATHER_DATA_SUCCEEDED:
 			const data = action.payload.data;
 			localStorage.setItem('location', data.location);
@@ -42,4 +43,4 @@ export default function(state = initialState, action) {
 		default:
 			return state;
 	}
-};
+}

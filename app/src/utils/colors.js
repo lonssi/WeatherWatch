@@ -1,7 +1,6 @@
 import chroma from 'chroma-js';
 import { Helpers } from './helpers.js';
-import { createMuiTheme} from '@material-ui/core/styles';
-
+import { createMuiTheme } from '@material-ui/core/styles';
 
 const colorThemeDark = {
 	id: 'dark',
@@ -71,10 +70,7 @@ const colorThemeLight = {
 	}
 };
 
-const colorThemes = [
-	colorThemeDark,
-	colorThemeLight
-];
+const colorThemes = [colorThemeDark, colorThemeLight];
 
 const colorArrayA = [
 	'hsl(310, 67%, 38%)',
@@ -131,7 +127,9 @@ const colorScaleA = chroma.scale(colorArrayA).mode('lab');
 const colorScaleB = chroma.scale(colorArrayB).mode('lab');
 const colorScaleC = chroma.scale(colorArrayC).mode('lab');
 
-const humidityScale = chroma.scale(['hsl(45, 85%, 51%)', 'hsl(204, 69%, 53%)']).mode('lab');
+const humidityScale = chroma
+	.scale(['hsl(45, 85%, 51%)', 'hsl(204, 69%, 53%)'])
+	.mode('lab');
 const cloudScale = chroma.scale(['hsl(204, 0%, 67%)', 'hsl(204, 69%, 53%)']).mode('lab');
 
 let getTemperatureColor = function(x) {
@@ -143,7 +141,10 @@ let getTemperatureColor = function(x) {
 		x = Helpers.remapValue(x, [0, 40], [0, 1]);
 		color = colorScaleB(x);
 	}
-	return color.set('lab.l', '*1.275').set('lch.c', '*1.1').css();
+	return color
+		.set('lab.l', '*1.275')
+		.set('lch.c', '*1.1')
+		.css();
 };
 
 let getPrecipitationColor = function(x) {
@@ -152,35 +153,43 @@ let getPrecipitationColor = function(x) {
 		return null;
 	} else {
 		x = Helpers.clamp((x - offset) / 12, 0, 1);
-		return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1').css();
+		return colorScaleC(x)
+			.set('lab.l', '*1.275')
+			.set('lch.c', '*1.1')
+			.css();
 	}
 };
 
 let getWindColor = function(x) {
 	x = Helpers.remapValue(x, [0, 27], [0, 1]);
-	return colorScaleC(x).set('lab.l', '*1.275').set('lch.c', '*1.1').css();
+	return colorScaleC(x)
+		.set('lab.l', '*1.275')
+		.set('lch.c', '*1.1')
+		.css();
 };
 
 let getHumidityColor = function(x) {
 	x = x / 100;
 	x = -Math.pow(x - 1, 2) + 1;
-	return humidityScale(x).set('lab.l', '*1.1').css();
+	return humidityScale(x)
+		.set('lab.l', '*1.1')
+		.css();
 };
 
 let getCloudColor = function(x) {
-	return (cloudScale((100 - x) / 100)).set('lab.l', '*1.1').css();
+	return cloudScale((100 - x) / 100)
+		.set('lab.l', '*1.1')
+		.css();
 };
 
 let getColorTheme = function(theme, hue) {
-
 	hue = hue * 360;
 
 	const themeNew = JSON.parse(JSON.stringify(theme));
-	const hueString = (hue >= 0) ? "+" + hue.toString() : hue.toString();
+	const hueString = hue >= 0 ? '+' + hue.toString() : hue.toString();
 
 	for (let key in themeNew) {
-
-		if (key === "static" || key === "id" || key === "name") {
+		if (key === 'static' || key === 'id' || key === 'name') {
 			continue;
 		}
 
@@ -197,12 +206,11 @@ let getColorTheme = function(theme, hue) {
 };
 
 let getMuiTheme = function(colorTheme) {
+	const hover =
+		colorTheme.id === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
 
-	const hover = (colorTheme.id === "dark")
-		? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)";
-
-	const selected = (colorTheme.id === "dark")
-		? "rgba(255, 255, 255, 0.14)" : "rgba(0, 0, 0, 0.14)";
+	const selected =
+		colorTheme.id === 'dark' ? 'rgba(255, 255, 255, 0.14)' : 'rgba(0, 0, 0, 0.14)';
 
 	const muiTheme = {
 		overrides: {
@@ -222,16 +230,16 @@ let getMuiTheme = function(colorTheme) {
 				light: colorTheme.accent.light,
 				main: colorTheme.accent.light,
 				dark: colorTheme.accent.light,
-				contrastText: colorTheme.accent.light,
+				contrastText: colorTheme.accent.light
 			},
 			secondary: {
 				light: colorTheme.accent.light,
 				main: colorTheme.accent.light,
 				dark: colorTheme.accent.light,
-				contrastText: colorTheme.accent.light,
+				contrastText: colorTheme.accent.light
 			},
 			background: {
-				paper: colorTheme.misc.menu,
+				paper: colorTheme.misc.menu
 			},
 			text: {
 				primary: colorTheme.text.light,
@@ -242,7 +250,7 @@ let getMuiTheme = function(colorTheme) {
 			action: {
 				active: colorTheme.text.light,
 				hover: hover,
-				selected: selected,
+				selected: selected
 			}
 		}
 	};

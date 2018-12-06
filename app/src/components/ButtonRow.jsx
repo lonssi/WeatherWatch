@@ -6,7 +6,7 @@ import { availableDataModes } from '../assets/store';
 import { openSettingsDialog, openAboutDialog } from '../actions/dialogActions';
 import { toggleFutureMode, setDataMode } from '../actions/clockActions';
 import { Constants } from '../utils/constants';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -14,53 +14,50 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Tooltip from '@material-ui/core/Tooltip';
 
-
 class ButtonRow extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
 			dataMenuOpen: false
 		};
-	};
+	}
 
 	futureButtonClick = () => {
 		this.props.toggleFutureMode();
 	};
 
-	dataModeButtonClick = (data) => {
+	dataModeButtonClick = data => {
 		this.handleDataMenuRequestClose();
 		this.props.setDataMode(data);
 	};
 
-	dotMenuButtonClick = (data) => {
+	dotMenuButtonClick = data => {
 		this.props.openSettingsDialog();
 	};
 
-	aboutDialogButtonClick = (data) => {
+	aboutDialogButtonClick = data => {
 		this.props.openAboutDialog();
 	};
 
-	handleDataMenuTouchTap = (event) => {
+	handleDataMenuTouchTap = event => {
 		// This prevents ghost click
 		event.preventDefault();
 		this.setState({
 			dataMenuOpen: true,
-			anchorEl: event.currentTarget,
+			anchorEl: event.currentTarget
 		});
 	};
 
 	handleDataMenuRequestClose = () => {
 		this.setState({
-			dataMenuOpen: false,
+			dataMenuOpen: false
 		});
 	};
 
 	render() {
-
 		const settingsOpen = this.props.settingsOpen;
 		const aboutDialogOpen = this.props.aboutDialogOpen;
-		const clockSettings = this.props.clockSettings
+		const clockSettings = this.props.clockSettings;
 		const colorTheme = this.props.colorTheme;
 
 		const smallButtonStyle = {
@@ -68,21 +65,23 @@ class ButtonRow extends React.Component {
 			minWidth: '36px'
 		};
 
-		const dotMenuBtnStyle = (settingsOpen)
+		const dotMenuBtnStyle = settingsOpen
 			? _.assign({}, smallButtonStyle, { backgroundColor: colorTheme.misc.select })
 			: smallButtonStyle;
 
-		const aboutDialogBtnStyle = (aboutDialogOpen)
+		const aboutDialogBtnStyle = aboutDialogOpen
 			? _.assign({}, smallButtonStyle, { backgroundColor: colorTheme.misc.select })
 			: smallButtonStyle;
 
-		const dataMenuButtonStyle = (this.state.dataMenuOpen) ?
-			{ backgroundColor: colorTheme.misc.select } : {};
+		const dataMenuButtonStyle = this.state.dataMenuOpen
+			? { backgroundColor: colorTheme.misc.select }
+			: {};
 
-		const futureButtonStyle = (clockSettings.futureMode) ?
-			{ backgroundColor: colorTheme.misc.select } : {};
+		const futureButtonStyle = clockSettings.futureMode
+			? { backgroundColor: colorTheme.misc.select }
+			: {};
 
-		const dataModeItems = availableDataModes.map((item) => {
+		const dataModeItems = availableDataModes.map(item => {
 			return (
 				<MenuItem
 					selected={item.id === clockSettings.dataMode.id}
@@ -101,10 +100,7 @@ class ButtonRow extends React.Component {
 
 		const dataButton = (
 			<React.Fragment>
-				<Tooltip
-					title="Select data type"
-					enterDelay={Constants.tooltipDelay}
-				>
+				<Tooltip title="Select data type" enterDelay={Constants.tooltipDelay}>
 					<Button
 						onClick={this.handleDataMenuTouchTap}
 						style={dataMenuButtonStyle}
@@ -130,10 +126,7 @@ class ButtonRow extends React.Component {
 		);
 
 		const settingsButton = (
-			<Tooltip
-				title="Settings"
-				enterDelay={Constants.tooltipDelay}
-			>
+			<Tooltip title="Settings" enterDelay={Constants.tooltipDelay}>
 				<Button
 					onClick={this.dotMenuButtonClick}
 					style={dotMenuBtnStyle}
@@ -147,10 +140,7 @@ class ButtonRow extends React.Component {
 		);
 
 		const aboutButton = (
-			<Tooltip
-				title="About"
-				enterDelay={Constants.tooltipDelay}
-			>
+			<Tooltip title="About" enterDelay={Constants.tooltipDelay}>
 				<Button
 					onClick={this.aboutDialogButtonClick}
 					style={aboutDialogBtnStyle}
@@ -164,10 +154,7 @@ class ButtonRow extends React.Component {
 		);
 
 		const futureButton = (
-			<Tooltip
-				title="12 hours forward"
-				enterDelay={Constants.tooltipDelay}
-			>
+			<Tooltip title="12 hours forward" enterDelay={Constants.tooltipDelay}>
 				<Button
 					onClick={this.futureButtonClick}
 					style={futureButtonStyle}
@@ -200,13 +187,13 @@ ButtonRow.propTypes = {
 };
 
 export default connect(
-	(state) => {
+	state => {
 		return {
 			clockSettings: state.clockReducer,
 			settingsOpen: state.dialogReducer.settingsDialogOpen,
 			aboutDialogOpen: state.dialogReducer.aboutDialogOpen,
 			colorTheme: state.appReducer.colorTheme
-		}
+		};
 	},
 	{
 		openSettingsDialog,

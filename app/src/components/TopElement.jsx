@@ -4,21 +4,19 @@ import { connect } from 'react-redux';
 import { fetchWeatherData, fetchWeatherDataLocation } from '../actions/weatherActions.js';
 import { Constants } from '../utils/constants';
 import { Helpers } from '../utils/helpers.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 
-
 class TopElement extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
-			locationText: ""
+			locationText: ''
 		};
-	};
+	}
 
 	searchButtonClicked = () => {
 		this.props.fetchWeatherData(this.state.locationText);
@@ -30,7 +28,7 @@ class TopElement extends React.Component {
 		this.props.fetchWeatherDataLocation();
 	};
 
-	onKeyPress = (event) => {
+	onKeyPress = event => {
 		// On enter key press
 		if (event.charCode === 13) {
 			event.preventDefault();
@@ -38,7 +36,7 @@ class TopElement extends React.Component {
 		}
 	};
 
-	handleInputChange = (event) => {
+	handleInputChange = event => {
 		this.setState({
 			locationText: event.target.value
 		});
@@ -46,26 +44,23 @@ class TopElement extends React.Component {
 
 	clearInput = () => {
 		this.setState({
-			locationText: ""
+			locationText: ''
 		});
 	};
 
 	getLoader = () => {
 		return (
 			<LinearProgress
-				style={{ backgroundColor: this.props.colorTheme.bg.light, "height": "2px" }}
+				style={{ backgroundColor: this.props.colorTheme.bg.light, height: '2px' }}
 				mode="indeterminate"
 			/>
 		);
 	};
 
-	getLocationButton = (buttonStyle) => {
+	getLocationButton = buttonStyle => {
 		return (
 			<div className="location-button-container align-left">
-				<Tooltip
-					title="Get location"
-					enterDelay={Constants.tooltipDelay}
-				>
+				<Tooltip title="Get location" enterDelay={Constants.tooltipDelay}>
 					<Button
 						onClick={this.locationButtonClicked}
 						style={buttonStyle}
@@ -90,15 +85,12 @@ class TopElement extends React.Component {
 				onChange={this.handleInputChange}
 			/>
 		);
-	}
+	};
 
-	getSearchButton = (buttonStyle) => {
+	getSearchButton = buttonStyle => {
 		return (
 			<div className="location-button-container align-right">
-				<Tooltip
-					title="Search"
-					enterDelay={Constants.tooltipDelay}
-				>
+				<Tooltip title="Search" enterDelay={Constants.tooltipDelay}>
 					<Button
 						onClick={this.searchButtonClicked}
 						style={buttonStyle}
@@ -112,15 +104,16 @@ class TopElement extends React.Component {
 	};
 
 	render() {
-
 		const buttonStyle = { width: '36px', minWidth: '36px' };
 
 		const locationButton = this.getLocationButton(buttonStyle);
 		const textField = this.getTextField();
 		const searchButton = this.getSearchButton(buttonStyle);
 
-		const loading = this.props.weatherLoading || (this.props.weatherData && !this.props.imagesReady);
-		const loader = (loading) ? this.getLoader() : null;
+		const loading =
+			this.props.weatherLoading ||
+			(this.props.weatherData && !this.props.imagesReady);
+		const loader = loading ? this.getLoader() : null;
 
 		return (
 			<div className="top-container">
@@ -130,9 +123,7 @@ class TopElement extends React.Component {
 						{textField}
 						{searchButton}
 					</div>
-					<div className="loader-container">
-						{loader}
-					</div>
+					<div className="loader-container">{loader}</div>
 				</div>
 			</div>
 		);
@@ -147,13 +138,13 @@ TopElement.propTypes = {
 };
 
 export default connect(
-	(state) => {
+	state => {
 		return {
 			colorTheme: state.appReducer.colorTheme,
 			weatherLoading: state.weatherReducer.loading,
 			weatherData: state.weatherReducer.weatherData,
 			imagesReady: state.appReducer.imagesReady
-		}
+		};
 	},
 	{ fetchWeatherData, fetchWeatherDataLocation }
 )(TopElement);
