@@ -80,11 +80,19 @@
 	width: 16px;
 	height: 100%;
 	text-align: center;
+
+	svg {
+		width: 100% !important;
+	}
 }
 
 .button-unit-icon-container {
 	width: 18px;
 	margin-right: 8px;
+
+	svg {
+		width: 100% !important;
+	}
 }
 
 .buttons-container {
@@ -96,17 +104,13 @@
 
 .settings-container {
 
-	.settings-check-boxes {
-		margin-bottom: 12px;
+	.settings-switches {
+		margin-bottom: 16px;
 
 		> div > label {
 			margin-bottom: -10px !important;
 		}
 	}
-}
-
-.select-field {
-	margin-bottom: 5px;
 }
 
 .select-field:before {

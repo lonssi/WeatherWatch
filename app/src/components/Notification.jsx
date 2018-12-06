@@ -35,6 +35,7 @@ class Notification extends React.Component {
 				</DialogContent>
 				<DialogActions>
 					<Button
+						color="primary"
 						onClick={this.handleDialogClose}
 						aria-label="Close"
 						autoFocus

@@ -21,7 +21,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
+import Switch from '@material-ui/core/Switch';
 import { Colors } from '../utils/colors.js';
 
 
@@ -55,13 +55,13 @@ class Settings extends React.Component {
 		this.props.setClockSize(event.target.value);
 	};
 
-	getCheckBoxes = () => {
+	getSwitches = () => {
 		return (
-			<div className="settings-check-boxes">
+			<div className="settings-switches">
 				<FormGroup>
 					<FormControlLabel
 						control={
-							<Checkbox
+							<Switch
 								checked={this.props.clockSettings.gradientMode}
 								onChange={this.gradientModeToggled}
 							/>
@@ -70,7 +70,7 @@ class Settings extends React.Component {
 					/>
 					<FormControlLabel
 						control={
-							<Checkbox
+							<Switch
 								checked={this.props.clockSettings.forecastTimezone}
 								onChange={this.tzModeToggled}
 							/>
@@ -79,7 +79,7 @@ class Settings extends React.Component {
 					/>
 					<FormControlLabel
 						control={
-							<Checkbox
+							<Switch
 								checked={this.props.clockSettings.secondHand}
 								onChange={this.secondHandToggled}
 							/>
@@ -154,7 +154,7 @@ class Settings extends React.Component {
 
 	render() {
 
-		const checkBoxes = this.getCheckBoxes();
+		const switches = this.getSwitches();
 		const selectFields = this.getSelectFields();
 
 		return (
@@ -167,12 +167,13 @@ class Settings extends React.Component {
 					<DialogTitle>Settings</DialogTitle>
 					<DialogContent>
 						<div className="settings-container">
-							{checkBoxes}
+							{switches}
 							{selectFields}
 						</div>
 					</DialogContent>
 					<DialogActions>
 						<Button
+							color="primary"
 							onClick={this.handleDialogClose}
 							aria-label="Close"
 							autoFocus
