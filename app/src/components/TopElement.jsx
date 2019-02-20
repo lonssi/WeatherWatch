@@ -104,7 +104,14 @@ class TopElement extends React.Component {
 	};
 
 	render() {
-		const buttonStyle = { width: '36px', minWidth: '36px' };
+		const buttonSize = 36;
+
+		const buttonStyle = {
+			width: buttonSize,
+			minWidth: buttonSize,
+			height: buttonSize,
+			minHeight: buttonSize
+		};
 
 		const locationButton = this.getLocationButton(buttonStyle);
 		const textField = this.getTextField();

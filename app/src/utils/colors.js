@@ -252,6 +252,9 @@ let getMuiTheme = function(colorTheme) {
 				hover: hover,
 				selected: selected
 			}
+		},
+		typography: {
+		    useNextVariants: true,
 		}
 	};
 
